@@ -9,6 +9,8 @@ require_relative "chapter"
 require_relative "cover_art"
 require_relative "custom_list"
 require_relative "manga"
+require_relative "upload"
+require_relative "user"
 
 # Relationship
 require_relative "relationship"
