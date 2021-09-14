@@ -12,10 +12,16 @@ module Mangadex
           :relationships
       
       class_methods do
-        USING_ATTRIBUTES = []
+        USING_ATTRIBUTES = {}
 
         def has_attributes(*attributes)
-          USING_ATTRIBUTES.concat(attributes.map(&:to_sym))
+          USING_ATTRIBUTES[self.name] = Array(USING_ATTRIBUTES[self.name]).concat(
+            attributes.map(&:to_sym)
+          )
+        end
+
+        def attributes
+          USING_ATTRIBUTES[self.name] || []
         end
 
         def type
@@ -24,15 +30,24 @@ module Mangadex
 
         def from_data(data)
           base_class_name = self.name.gsub('::', '_')
+          klass_name = self.name
           target_attributes_class_name = "#{base_class_name}_Attributes"
           
           klass = if const_defined?(target_attributes_class_name)
             target_attributes_class_name.constantize
           else
-            klass = Class.new(MangadexObject) do
-              attr_accessor *USING_ATTRIBUTES
-            end
-            Object.const_set(target_attributes_class_name, klass)
+            class_contents = <<-END
+              class ::#{target_attributes_class_name} < MangadexObject
+                #{USING_ATTRIBUTES[klass_name].map { |attribute| "attr_accessor(:#{attribute})" }.join(';')}
+
+                def self.attributes_to_inspect
+                  #{USING_ATTRIBUTES[klass_name]}
+                end
+              end
+            END
+
+            eval class_contents
+            Object.const_get(target_attributes_class_name)
           end
 
           data = data.with_indifferent_access
@@ -71,7 +86,10 @@ module Mangadex
         end
 
         def method_missing(method_name)
-          if attributes.respond_to?(method_name)
+          if self.class.attributes.include?(method_name.to_sym)
+            return if attributes.nil?
+            return unless attributes.respond_to?(method_name)
+
             attributes.send(method_name)
           elsif any_relationships?
             existing_relationships = relationships.map(&:type)

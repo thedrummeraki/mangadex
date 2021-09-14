@@ -20,8 +20,14 @@ module Mangadex
       :created_at,
       :updated_at
 
+    class << self
+      def attributes_to_inspect
+        [:id, :type, :title, :content_rating, :original_language, :year]
+      end
+    end
+
     def content_rating
-      ContentRating.new(attributes.content_rating)
+      attributes&.content_rating.presence && ContentRating.new(attributes.content_rating)
     end
   end
 end

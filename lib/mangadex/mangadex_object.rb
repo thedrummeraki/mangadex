@@ -5,6 +5,15 @@ module Mangadex
   class MangadexObject
     include Internal::WithAttributes
 
+    def self.attributes_to_inspect
+      to_inspect = [:id, :type]
+      if self.respond_to?(:inspect_attributes)
+        to_inspect.concat(Array(self.inspect_attributes))
+      end
+
+      to_inspect
+    end
+
     def initialize(**args)
       args.keys.each do |attribute|
         original_attribute = attribute
@@ -33,6 +42,19 @@ module Mangadex
 
     def hash
       id.hash
+    end
+
+    def inspect
+      string = "#<#{self.class.name}:#{self.object_id} "
+      fields = self.class.attributes_to_inspect.map do |field|
+        value = self.send(field)
+        if !value.nil?
+          "@#{field}=\"#{value}\""
+        end
+      rescue => error
+        "@#{field}[!]={#{error.class.name}: #{error.message}}"
+      end.compact
+      string << fields.join(" ") << ">"
     end
   end
 end
