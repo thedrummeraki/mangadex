@@ -3,6 +3,8 @@ require_relative "internal/with_attributes"
 
 module Mangadex
   class MangadexObject
+    include Internal::WithAttributes
+
     def initialize(**args)
       args.keys.each do |attribute|
         original_attribute = attribute
@@ -19,6 +21,8 @@ module Mangadex
           warn("Ignoring setter `#{attribute_to_set}` on #{self.class.name}...")
         end
       end
+
+      self.type = self.class.type if self.type.blank?
     end
 
     def eq?(other)

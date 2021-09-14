@@ -1,4 +1,4 @@
-require 'active_support'
+require "active_support/hash_with_indifferent_access"
 
 module Mangadex
   module Internal
@@ -18,6 +18,10 @@ module Mangadex
           USING_ATTRIBUTES.concat(attributes.map(&:to_sym))
         end
 
+        def type
+          self.name.split('::').last.underscore
+        end
+
         def from_data(data)
           base_class_name = self.name.gsub('::', '_')
           target_attributes_class_name = "#{base_class_name}_Attributes"
@@ -31,6 +35,8 @@ module Mangadex
             Object.const_set(target_attributes_class_name, klass)
           end
 
+          data = data.with_indifferent_access
+
           relationships = data['relationships']&.map do |relationship_data|
             Relationship.from_data(relationship_data)
           end
@@ -39,7 +45,7 @@ module Mangadex
 
           initialize_hash = {
             id: data['id'],
-            type: data['type'],
+            type: data['type'] || self.type,
             attributes: attributes,
           }
 

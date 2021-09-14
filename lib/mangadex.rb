@@ -1,3 +1,6 @@
+require 'active_support'
+require_relative 'extensions'
+
 require "mangadex/version"
 require "mangadex/internal"
 require "mangadex/types"

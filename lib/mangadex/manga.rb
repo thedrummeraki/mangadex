@@ -2,8 +2,6 @@ require_relative "mangadex_object"
 
 module Mangadex
   class Manga < MangadexObject
-    include Internal::WithAttributes
-
     has_attributes \
       :title,
       :alt_titles,
