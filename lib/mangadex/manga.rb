@@ -21,5 +21,9 @@ module Mangadex
       :version,
       :created_at,
       :updated_at
+
+    def content_rating
+      ContentRating.new(attributes.content_rating)
+    end
   end
 end
