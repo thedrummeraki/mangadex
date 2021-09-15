@@ -1,9 +1,11 @@
 require 'rest-client'
 require 'json'
+require 'active_support/core_ext/object/to_query'
+require 'active_support/core_ext/hash/keys'
 
 module Mangadex
   module Internal
-    class Api
+    class Request
       BASE_URI = 'https://api.mangadex.org'
       ALLOWED_METHODS = %i(get post put).freeze
 
@@ -11,8 +13,8 @@ module Mangadex
       attr_reader :response
 
       class << self
-        def get(path, convert_to_class=nil, headers: nil)
-          new(path, method: :get, headers: headers, payload: nil).run!
+        def get(path, params={}, headers: nil)
+          new(path_with_params(path, params), method: :get, headers: headers, payload: nil).run!
         end
 
         def post(path, headers: nil, payload: nil)
@@ -21,6 +23,17 @@ module Mangadex
 
         def put(path, headers: nil, payload: nil)
           new(path, method: :put, headers: headers, payload: payload).run!
+        end
+        
+        private
+
+        def path_with_params(path, params)
+          return path if params.blank?
+
+          params = params.deep_transform_keys do |key|
+            key.to_s.camelize(:lower)
+          end
+          "#{path}?#{params.to_query}"
         end
       end
 
@@ -41,15 +54,21 @@ module Mangadex
       end
 
       def run!
-        # Rails.logger.info("[#{self.class.name}] #{method.to_s.upcase} #{request_url}")
+        puts("[#{self.class.name}] #{method.to_s.upcase} #{request_url}")
         start_time = Time.now
 
         @response = request.execute
         end_time = Time.now
         elapsed_time = ((end_time - start_time) * 1000).to_i
-        # Rails.logger.info("[#{self.class.name}] took #{elapsed_time} ms")
+        puts("[#{self.class.name}] took #{elapsed_time} ms")
 
-        JSON.parse(@response.body) if @response.body
+        Mangadex::Api::Response.coerce(JSON.parse(@response.body)) if @response.body
+      rescue RestClient::Exception => error
+        if error.response.body
+          Mangadex::Api::Response.coerce(JSON.parse(error.response.body))
+        else
+          raise error
+        end
       end
 
       private
