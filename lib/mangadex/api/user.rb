@@ -2,14 +2,16 @@ module Mangadex
   module Api
     class User
       attr_accessor :mangadex_user_id, :session, :refresh, :session_valid_until
+      attr_reader :data
 
-      def initialize(mangadex_user_id, session: nil, refresh: nil)
+      def initialize(mangadex_user_id, session: nil, refresh: nil, data: nil)
         raise ArgumentError, 'Missing mangadex_user_id' if mangadex_user_id.to_s.empty?
 
         @mangadex_user_id = mangadex_user_id
         @session = session
         @session_valid_until = session ? Time.now + (14 * 60) : nil
         @refresh = refresh
+        @data = data
       end
 
       # nil: Nothing happened, no need to refresh the token

@@ -20,6 +20,7 @@ module Mangadex
           mangadex_user.data.id,
           session: session,
           refresh: refresh,
+          data: mangadex_user.data,
         )
         Mangadex::Api::Context.user = user
         !user.session_expired?

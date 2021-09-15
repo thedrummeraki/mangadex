@@ -13,7 +13,8 @@ module Mangadex
             @@user = user
           elsif user.is_a?(Mangadex::User)
             @@user = Mangadex::Api::User.new(
-              mangadex_user_id: user.id,
+              user.id,
+              data: user,
             )
           elsif user.is_a?(Hash)
             user = user.with_indifferent_access
