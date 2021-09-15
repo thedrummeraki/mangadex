@@ -14,6 +14,7 @@ require_relative "custom_list"
 require_relative "manga"
 require_relative "upload"
 require_relative "user"
+require_relative "tag"
 
 # Relationship
 require_relative "relationship"
