@@ -48,13 +48,14 @@ module Mangadex
         RestClient::Request.new(
           method: method,
           url: request_url,
-          headers: headers,
+          headers: request_headers,
           payload: request_payload,
         )
       end
 
       def run!
-        puts("[#{self.class.name}] #{method.to_s.upcase} #{request_url}")
+        payload_details = request_payload ? "Payload: #{request_payload}" : "{no-payload}"
+        puts("[#{self.class.name}] #{method.to_s.upcase} #{request_url} #{payload_details}")
         start_time = Time.now
 
         @response = request.execute
@@ -79,9 +80,17 @@ module Mangadex
       end
 
       def request_payload
-        return unless payload.nil? || payload.empty?
+        return if payload.nil? || payload.empty?
 
         JSON.generate(payload)
+      end
+
+      def request_headers
+        return headers if Mangadex::Api::Context.user.nil?
+
+        headers.merge({
+          Authorization: Mangadex::Api::Context.user.with_valid_session.session,
+        })
       end
 
       def missing_method?(method)

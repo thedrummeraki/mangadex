@@ -5,7 +5,7 @@ module Mangadex
 
       class << self
         def user
-          @@user
+          @@user&.with_valid_session
         end
 
         def user=(user)
@@ -23,17 +23,27 @@ module Mangadex
               session: user[:session],
               refresh: user[:refresh],
             )
+          elsif user.nil?
+            @@user = nil
           else
             raise ArgumentError, "Must be an instance of #{Mangadex::Api::User}, #{Mangadex::User} or Hash"
           end
         end
 
         def with_user(user)
-          current_user = self.user
-          self.user = user
-          yield
+          current_user = @@user
+          @@user = user
+          response = yield
+          @@user = current_user
+          response
         ensure
-          self.user = current_user
+          @@user = current_user
+        end
+
+        def without_user
+          with_user(nil) do
+            yield
+          end
         end
       end
     end

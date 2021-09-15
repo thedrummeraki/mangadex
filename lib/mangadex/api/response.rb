@@ -31,6 +31,8 @@ module Mangadex
             coerce_entity(data)
           elsif data['response'] == 'collection'
             coerce_collection(data)
+          else
+            data
           end
         end
 
@@ -64,7 +66,7 @@ module Mangadex
           new(
             result: data['result'],
             response: data['response'],
-            data: klass.from_data(data),
+            data: klass.from_data(data['data'] || data),
           )
         end
 
@@ -84,6 +86,10 @@ module Mangadex
             ),
           )
         end
+      end
+
+      def errored?
+        Array(errors).any?
       end
     end
   end

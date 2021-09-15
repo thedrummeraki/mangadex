@@ -2,6 +2,9 @@
 require_relative "content_rating"
 require_relative "mangadex_object"
 
+# Authorization
+require_relative "auth"
+
 # Mangadex objects
 require_relative "author"
 require_relative "artist"

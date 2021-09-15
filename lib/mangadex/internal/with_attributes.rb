@@ -85,7 +85,7 @@ module Mangadex
           Array(relationships).any?
         end
 
-        def method_missing(method_name)
+        def method_missing(method_name, *args, **kwargs)
           if self.class.attributes.include?(method_name.to_sym)
             return if attributes.nil?
             return unless attributes.respond_to?(method_name)
