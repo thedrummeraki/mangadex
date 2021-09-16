@@ -79,4 +79,15 @@ Logs out the current user. Sets `Mangadex::Api::Content.user` to `nil`.
 > - Returns `true` if request is considered successful.
 > - Idempotent request.
 
+#### `refresh_token`
 
+```ruby
+Mangadex::Auth.refresh_token
+```
+
+Manually cause a token refresh.
+> Please note that simply calling `Mangadex::Api::Content.user` ensures that the token is valid. More info [here](#).
+
+> - Returns `nil` if user is not logged (ie: `Mangadex::Api::Content.user` is `nil`)
+> - Returns `true` if the refresh is successful
+> - Returns `false` if the refresh is [not successful](#).
