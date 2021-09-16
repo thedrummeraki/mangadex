@@ -20,7 +20,8 @@ Or install it yourself as:
 
 ## Usage
 
-Coming soon.
+Please note that I tried my best to follow Mangadex's naming conventions for [their documentation](https://api.mangadex.org).
+To find out how to use the gem, you're welcome to [check this out](lib/mangadex).
 
 ## Development
 
