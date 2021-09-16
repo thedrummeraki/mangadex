@@ -25,8 +25,8 @@ module Mangadex
           new(path, method: :put, headers: headers, payload: payload).run!(raw: raw)
         end
 
-        def delete(path, headers: nil, raw: false)
-          new(path, method: :delete, headers: headers).run!(raw: raw)
+        def delete(path, headers: nil, payload: nil, raw: false)
+          new(path, method: :delete, headers: headers, payload: payload).run!(raw: raw)
         end
         
         private
