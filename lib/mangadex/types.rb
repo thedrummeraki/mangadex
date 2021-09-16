@@ -15,6 +15,7 @@ require_relative "manga"
 require_relative "upload"
 require_relative "user"
 require_relative "tag"
+require_relative "scanlation_group"
 
 # Relationship
 require_relative "relationship"

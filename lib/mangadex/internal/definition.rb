@@ -1,97 +1,142 @@
 module Mangadex
   module Internal
     class Definition
+      attr_reader :key, :value, :converts, :accepts, :required
+      attr_reader :errors
+
+      def initialize(key, value, converts: nil, accepts: nil, required: false)
+        @converts = converts
+        @key = key
+        @value = convert_value(value)
+        @raw_value = value
+        @accepts = accepts
+        @required = required ? true : false
+        @errors = Array.new
+      end
+
+      def empty?
+        value.respond_to?(:empty?) ? value.empty? : value.to_s.strip.empty?
+      end
+
+      def validate!
+        validate_required!
+        validate_accepts!
+
+        true
+      end
+
+      def valid?
+        validate!
+      rescue ArgumentError
+        false
+      end
+
+      def error
+        validate! && nil
+      rescue ArgumentError => error
+        error.message
+      end
+
+      def convert_value(value)
+        if converts.is_a?(Proc)
+          converts.call(value)
+        elsif converts.is_a?(String) || converts.is_a?(Symbol)
+          value.send(converts)
+        else
+          value
+        end
+      end
+
+      def validate_required!
+        return unless required
+
+        if empty?
+          raise ArgumentError, "Missing :#{key}"
+        end
+      end
+
+      def validate_accepts!
+        return if value.nil? && !required
+        return unless accepts
+
+        if accepts.is_a?(Class) && !value.is_a?(accepts)
+          raise ArgumentError, "Expected :#{key} to be a #{accepts}, but got a #{value.class}"
+        end
+        if accepts.is_a?(Regexp) && !(accepts === value)
+          raise ArgumentError, "Expected :#{key} to match /#{accepts}/"
+        end
+        if accepts.is_a?(Array)
+          if accepts.count == 1 && accepts[0].is_a?(Class)
+            expected_class = accepts[0]
+            if !value.is_a?(Array)
+              raise ArgumentError, "Expected :#{key} to be an Array of #{expected_class}, but got #{value}"
+            end
+
+            invalid_elements = []
+            value.each do |x|
+              invalid_elements << x unless x.is_a?(expected_class)
+            end
+            return if invalid_elements.empty?
+            bad = invalid_elements.map { |x| "<#{x}:#{x.class}>" }
+            raise ArgumentError, "Expected elements in :#{key} to be an Array of #{expected_class}, but found #{bad}"
+          else
+            if value.is_a?(Array)
+              extra_elements = value - accepts
+              return if extra_elements.empty?
+              raise ArgumentError, "Expected elements in :#{key} to be one of #{accepts}, but found #{extra_elements}"
+            elsif !accepts.include?(value)
+              raise ArgumentError, "Expected :#{key} to be one of #{accepts}, but got #{@raw_value}:#{@raw_value.class}"
+            end
+          end
+        end
+      end
+
       class << self
-        def manga_list(args)
-          ensure_params(
+        def converts(key=nil)
+          procs = { to_a: -> ( x ) { Array(x) } }
+          return procs if key.nil?
+
+          procs[key]
+        end
+
+        def chapter_list(args)
+          validate(
             args,
             {
-              limit: Integer,
-              offset: Integer,
-              title: String,
-              authors: Array,
-              artists: Array,
-              year: Integer,
-              included_tags: Array,
-              included_tags_mode: { value: %w(OR AND), as: -> (value) { Array(value) } },
-              excluded_tags: Array,
-              excluded_tags_mode: { value: %w(OR AND), as: -> (value) { Array(value) } },
-              status: { value: %w(ongoing completed hiatus cancelled), as: -> (value) { Array(value) } },
-              original_language: Array,
-              excluded_original_language: Array,
-              available_translated_language: Array,
-              publication_demographic: Array,
-              ids: Array,
-              content_rating: { value: %w(safe suggestive erotica pornographic), as: -> (value) { Array(value) } },
-              created_at_since: %r{^\d{4}-[0-1]\d-([0-2]\d|3[0-1])T([0-1]\d|2[0-3]):[0-5]\d:[0-5]\d$},
-              updated_at_since: %r{^\d{4}-[0-1]\d-([0-2]\d|3[0-1])T([0-1]\d|2[0-3]):[0-5]\d:[0-5]\d$},
-              order: Hash,
-              includes: Array,
+              limit: { accepts: Integer },
+              offset: { accepts: Integer },
+              translated_language: { accepts: String },
+              original_language: { accepts: [String] },
+              excluded_original_language: { accepts: [String] },
+              content_rating: { accepts: %w(safe suggestive erotica pornographic), converts: converts(:to_a) },
+              include_future_updates: { accepts: %w(0 1) },
+              created_at_since: { accepts: %r{^\d{4}-[0-1]\d-([0-2]\d|3[0-1])T([0-1]\d|2[0-3]):[0-5]\d:[0-5]\d$} },
+              updated_at_since: { accepts: %r{^\d{4}-[0-1]\d-([0-2]\d|3[0-1])T([0-1]\d|2[0-3]):[0-5]\d:[0-5]\d$} },
+              publish_at_since: { accepts: %r{^\d{4}-[0-1]\d-([0-2]\d|3[0-1])T([0-1]\d|2[0-3]):[0-5]\d:[0-5]\d$} },
+              order: { accepts: Hash },
+              includes: { accepts: [String], converts: converts(:to_a) },
             },
           )
         end
 
-        def manga_feed(args)
-          ensure_params(
-            args,
-            {
-              limit: Integer,
-              offset: Integer,
-              translated_language: String,
-              original_language: Array,
-              excluded_original_language: Array,
-              content_rating: { value: %w(safe suggestive erotica pornographic), as: -> (value) { Array(value) } },
-              include_future_updates: { value: %w(0 1) },
-              created_at_since: %r{^\d{4}-[0-1]\d-([0-2]\d|3[0-1])T([0-1]\d|2[0-3]):[0-5]\d:[0-5]\d$},
-              updated_at_since: %r{^\d{4}-[0-1]\d-([0-2]\d|3[0-1])T([0-1]\d|2[0-3]):[0-5]\d:[0-5]\d$},
-              publish_at_since: %r{^\d{4}-[0-1]\d-([0-2]\d|3[0-1])T([0-1]\d|2[0-3]):[0-5]\d:[0-5]\d$},
-              order: Hash,
-              includes: Array,
-            },
-          )
-        end
-
-        def ensure_params(params, definition=nil)
-          params = Hash(params).with_indifferent_access
+        def validate(args, definition)
+          args = Hash(args).with_indifferent_access
           definition = Hash(definition).with_indifferent_access
-          return params if definition.empty?
+          return args if definition.empty?
 
           errors = []
-          params.each do |key, value|
-            key = key.to_s
-            if !definition.has_key?(key) && !definition.has_key?("#{key}!")
-              errors << {extra: key}
-            elsif definition[key]
-              if definition[key].is_a?(Class) && !value.is_a?(definition[key])
-                errors << {key: key, expected: definition[key], got: value.class}
-              elsif definition[key].is_a?(Regexp) && !(definition[key] === value)
-                errors << {key: key, expected: "matching regex #{definition[key]}", got: value}
-              elsif definition[key].is_a?(Hash)
-                if definition.dig(key, :value)
-                  expected_value = definition.dig(key, :value).map(&:to_s) # must be an array!
-                  must_be_instance_of = expected_value.first.class
-                  convert_to_instance_of = definition.dig(key, :as)
+          extra_keys = args.keys - definition.keys
+          extra_keys.each do |extra_key|
+            errors << { extra: extra_key }
+          end
 
-                  if definition.dig(key, :required) && value.to_s.empty?
-                    errors << {missing: key}
-                    next
-                  end
-                  # binding.pry
-
-                  if !value.is_a?(must_be_instance_of) && !convert_to_instance_of
-                    errors << {key: key, expected: must_be_instance_of, got: value.class}
-                    next
-                  end
-
-                  valid_value = value.is_a?(Array) ? (value - expected_value).empty? : expected_value.include?(value.to_s)
-
-                  if valid_value
-                    params[key] = convert_to_instance_of.call(value) if convert_to_instance_of
-                  else
-                    errors << {key: key, expected: "one of #{expected_value}", got: value}
-                  end
-                end
-              end
+          definition.each do |key, definition|
+            validator = Definition.new(key, args[key], **definition.symbolize_keys)
+            validation_error = validator.error
+            if validation_error
+              errors << { message: validation_error }
+            elsif !validator.empty?
+              args[key] = validator.value
             end
           end
 
@@ -99,16 +144,16 @@ module Mangadex
             error_message = errors.map do |error|
               if error[:extra]
                 "params[:#{error[:extra]}] does not exist and cannot be passed to this request"
-              elsif error[:missing]
-                "params[:#{error[:missing]}] is missing"
+              elsif error[:message]
+                error[:message]
               else
-                "params[:#{error[:key]}] to be #{error[:expected]}, got #{error[:got]}"
+                error.to_s
               end
             end.join(', ')
-            raise ArgumentError, "Expected: #{error_message}"
+            raise ArgumentError, "Validation error: #{error_message}"
           end
 
-          params
+          args
         end
       end
     end

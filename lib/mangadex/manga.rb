@@ -22,9 +22,33 @@ module Mangadex
 
     class << self
       def list(**args)
+        to_a = Mangadex::Internal::Definition.converts(:to_a)
+
         Mangadex::Internal::Request.get(
           '/manga',
-          Mangadex::Internal::Definition.manga_list(args),
+          Mangadex::Internal::Definition.validate(args, {
+            limit: { accepts: Integer },
+            offset: { accepts: Integer },
+            title: { accepts: String },
+            authors: { accepts: [String] },
+            artists: { accepts: [String] },
+            year: { accepts: Integer },
+            included_tags: { accepts: [String] },
+            included_tags_mode: { accepts: %w(OR AND), converts: to_a },
+            excluded_tags: { accepts: [String] },
+            excluded_tags_mode: { accepts: %w(OR AND), converts: to_a },
+            status: { accepts: %w(ongoing completed hiatus cancelled), converts: to_a },
+            original_language: { accepts: [String] },
+            excluded_original_language: { accepts: [String] },
+            available_translated_language: { accepts: [String] },
+            publication_demographic: { accepts: %w(shounen shoujo josei seinen none), converts: to_a },
+            ids: { accepts: Array },
+            content_rating: { accepts: %w(safe suggestive erotica pornographic), converts: to_a },
+            created_at_since: { accepts: %r{^\d{4}-[0-1]\d-([0-2]\d|3[0-1])T([0-1]\d|2[0-3]):[0-5]\d:[0-5]\d$} },
+            updated_at_since: { accepts: %r{^\d{4}-[0-1]\d-([0-2]\d|3[0-1])T([0-1]\d|2[0-3]):[0-5]\d:[0-5]\d$} },
+            order: { accepts: Hash },
+            includes: { accepts: Array, converts: to_a },
+          }),
         )
       end
 
@@ -39,9 +63,9 @@ module Mangadex
       def volumes_and_chapters(id, **args)
         Mangadex::Internal::Request.get(
           '/manga/%{id}/aggregate' % {id: id},
-          Mangadex::Internal::Definition.ensure_params(args, {
-            translated_language: Array,
-            groups: Array,
+          Mangadex::Internal::Definition.validate(args, {
+            translated_language: { accepts: Array },
+            groups: { accepts: Array },
           }),
         )
       end
@@ -50,8 +74,8 @@ module Mangadex
       def view(id, **args)
         Mangadex::Internal::Request.get(
           '/manga/%{id}' % {id: id},
-          Mangadex::Internal::Definition.ensure_params(args, {
-            includes: Array,
+          Mangadex::Internal::Definition.validate(args, {
+            includes: { accepts: Array },
           })
         )
       end
@@ -77,15 +101,15 @@ module Mangadex
       def feed(id, **args)
         Mangadex::Internal::Request.get(
           '/manga/%{id}/feed' % {id: id},
-          Mangadex::Internal::Definition.manga_feed(args),
+          Mangadex::Internal::Definition.chapter_list(args),
         )
       end
 
       def random(**args)
         Mangadex::Internal::Request.get(
           '/manga/random',
-          Mangadex::Internal::Definition.ensure_params(args, {
-            includes: Array,
+          Mangadex::Internal::Definition.validate(args, {
+            includes: { accepts: Array },
           })
         )
       end
@@ -98,9 +122,12 @@ module Mangadex
 
       def reading_status(**args)
         Mangadex::Internal::Request.get(
-          '/manga/status' % {id: id},
-          Mangadex::Internal::Definition.ensure_params({status: status}, {
-            status: {value: %w(reading on_hold dropped plan_to_read re_reading completed)},
+          '/manga/status',
+          Mangadex::Internal::Definition.validate({status: status}, {
+            status: {
+              accepts: %w(reading on_hold dropped plan_to_read re_reading completed),
+              converts: Mangadex::Internal::Definition.converts(:to_a),
+            },
           })
         )
       end
@@ -114,8 +141,12 @@ module Mangadex
       def update_reading_status(id, status)
         Mangadex::Internal::Request.post(
           '/manga/%{id}/status' % {id: id},
-          payload: Mangadex::Internal::Definition.ensure_params({status: status}, {
-            status: {value: %w(reading on_hold dropped plan_to_read re_reading completed), required: true},
+          payload: Mangadex::Internal::Definition.validate({status: status}, {
+            status: {
+              accepts: %w(reading on_hold dropped plan_to_read re_reading completed),
+              converts: Mangadex::Internal::Definition.converts(:to_a),
+              required: true,
+            },
           })
         )
       end

@@ -21,8 +21,40 @@ module Mangadex
       :publish_at
 
     class << self
-      def attributes_to_inspect
-        [:id, :type, :title, :volume, :chapter, :page_count, :publish_at]
+      def list(**args)
+        Mangadex::Internal::Request.get(
+          '/chapter',
+          Mangadex::Internal::Definition.chapter_list(args),
+        )
+      end
+
+      def get(id, **args)
+        Mangadex::Internal::Request.get(
+          '/chapter/%{id}' % {id: id},
+          Mangadex::Internal::Definition.validate(args, {
+            includes: { accepts: [String] },
+          }),
+        )
+      end
+
+      def update(id, **args)
+        Mangadex::Internal::Request.put(
+          '/chapter/%{id}' % {id: id},
+          payload: Mangadex::Internal::Definition.validate(args, {
+            title: { accepts: String },
+            volume: { accepts: String },
+            chapter: { accepts: String },
+            translated_language: { accepts: %r{^[a-zA-Z\-]{2,5}$} },
+            groups: { accepts: [String] },
+            version: { accepts: Integer, required: true },
+          }),
+        )
+      end
+
+      def delete(id)
+        Mangadex::Internal::Request.delete(
+          '/chapter/%{id}' % {id: id},
+        )
       end
     end
 
@@ -56,6 +88,10 @@ module Mangadex
         locale_name: locale_name,
         preview_image_url: preview_image_url,
       })
+    end
+
+    def self.attributes_to_inspect
+      [:id, :type, :title, :volume, :chapter, :page_count, :publish_at]
     end
   end
 end

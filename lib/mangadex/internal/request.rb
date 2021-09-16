@@ -7,22 +7,26 @@ module Mangadex
   module Internal
     class Request
       BASE_URI = 'https://api.mangadex.org'
-      ALLOWED_METHODS = %i(get post put).freeze
+      ALLOWED_METHODS = %i(get post put delete).freeze
 
       attr_accessor :path, :headers, :payload, :method, :raw
       attr_reader :response
 
       class << self
-        def get(path, params={}, headers: nil)
-          new(path_with_params(path, params), method: :get, headers: headers, payload: nil).run!
+        def get(path, params={}, headers: nil, raw: false)
+          new(path_with_params(path, params), method: :get, headers: headers, payload: nil).run!(raw: raw)
         end
 
-        def post(path, headers: nil, payload: nil)
-          new(path, method: :post, headers: headers, payload: payload).run!
+        def post(path, headers: nil, payload: nil, raw: false)
+          new(path, method: :post, headers: headers, payload: payload).run!(raw: raw)
         end
 
-        def put(path, headers: nil, payload: nil)
-          new(path, method: :put, headers: headers, payload: payload).run!
+        def put(path, headers: nil, payload: nil, raw: false)
+          new(path, method: :put, headers: headers, payload: payload).run!(raw: raw)
+        end
+
+        def delete(path, headers: nil, raw: false)
+          new(path, method: :delete, headers: headers).run!(raw: raw)
         end
         
         private
@@ -53,7 +57,7 @@ module Mangadex
         )
       end
 
-      def run!
+      def run!(raw: false)
         payload_details = request_payload ? "Payload: #{request_payload}" : "{no-payload}"
         puts("[#{self.class.name}] #{method.to_s.upcase} #{request_url} #{payload_details}")
         start_time = Time.now
@@ -63,10 +67,12 @@ module Mangadex
         elapsed_time = ((end_time - start_time) * 1000).to_i
         puts("[#{self.class.name}] took #{elapsed_time} ms")
 
-        Mangadex::Api::Response.coerce(JSON.parse(@response.body)) if @response.body
+        if @response.body
+          raw ? @response.body : Mangadex::Api::Response.coerce(JSON.parse(@response.body))
+        end
       rescue RestClient::Exception => error
         if error.response.body
-          Mangadex::Api::Response.coerce(JSON.parse(error.response.body))
+          raw ? error.response.body : Mangadex::Api::Response.coerce(JSON.parse(error.response.body))
         else
           raise error
         end

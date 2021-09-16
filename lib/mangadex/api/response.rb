@@ -80,7 +80,12 @@ module Mangadex
             data: (
               Collection.new(
                 data['data'].map do |entity_data|
-                  coerce_entity(entity_data)
+                  object_type = entity_data['type']
+                  class_from_data = "Mangadex::#{object_type.split('_').collect(&:capitalize).join}"
+                  return unless Object.const_defined?(class_from_data)
+
+                  klass = Object.const_get(class_from_data)
+                  klass.from_data(entity_data)
                 end
               )
             ),
