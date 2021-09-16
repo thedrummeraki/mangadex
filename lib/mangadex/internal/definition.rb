@@ -153,7 +153,7 @@ module Mangadex
             raise ArgumentError, "Validation error: #{error_message}"
           end
 
-          args
+          args.symbolize_keys
         end
       end
     end

@@ -16,6 +16,7 @@ require_relative "upload"
 require_relative "user"
 require_relative "tag"
 require_relative "scanlation_group"
+require_relative "report_reason"
 
 # Relationship
 require_relative "relationship"
