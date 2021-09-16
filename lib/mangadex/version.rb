@@ -1,3 +1,3 @@
 module Mangadex
-  VERSION = "0.1.0"
+  VERSION = "5.3.0"
 end
