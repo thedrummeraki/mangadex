@@ -26,7 +26,29 @@ module Mangadex
         !user.session_expired?
       end
 
+      def check_token
+        JSON.parse(
+          Mangadex::Internal::Request.get(
+            '/auth/check',
+            raw: true,
+          )
+        )
+      end
+
       def logout
+        return true if Mangadex::Api::Context.user.nil?
+
+        response = Mangadex::Internal::Request.post(
+          '/auth/logout',
+        )
+        return reponse if response.is_a?(Mangadex::Api::Response) && response.errored?
+
+        Mangadex::Api::Context.user = nil
+        true
+      end
+
+      def refresh_token
+        !(Mangadex::Api::Context.user&.refresh!).nil?
       end
     end
   end
