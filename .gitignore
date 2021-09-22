@@ -9,4 +9,9 @@
 
 # rspec failure tracking
 .rspec_status
+
+# Build
+*.gem
+
+# Misc
 .DS_Store

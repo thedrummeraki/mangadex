@@ -59,6 +59,7 @@ GEM
       sorbet-static (= 0.5.9152)
     sorbet-runtime (0.5.9152)
     sorbet-static (0.5.9152-universal-darwin-20)
+    sorbet-static (0.5.9152-x86_64-linux)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
     unf (0.1.4)
@@ -68,6 +69,7 @@ GEM
 
 PLATFORMS
   x86_64-darwin-20
+  x86_64-linux
 
 DEPENDENCIES
   bundler (~> 2.2.19)

@@ -16,6 +16,8 @@ module Mangadex
           "[Warning] Check out #{Mangadex::Internal::Request::BASE_URI} for more information.",
         )
       end
+
+      version
     end.call
   end
 end
