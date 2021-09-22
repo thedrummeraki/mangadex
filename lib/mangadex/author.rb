@@ -1,64 +1,99 @@
-require_relative "mangadex_object"
+# typed: true
+
+require_relative 'mangadex_object'
 
 module Mangadex
   class Author < MangadexObject
     has_attributes :name, :image_url, :biography, :version, :created_at, :updated_at
 
-    class << self
-      def list(**args)
-        Mangadex::Internal::Request.get(
-          '/author',
-          Mangadex::Internal::Definition.validate(args, {
-            limit: { accepts: Integer },
-            offset: { accepts: Integer },
-            ids: { accepts: [String] },
-            name: { accepts: String },
-            order: { accepts: Hash },
-            includes: { accepts: [String] },
-          }),
-        )
-      end
+    # List all authors.
+    # Path: +GET /author+
+    # Reference: https://api.mangadex.org/docs.html#operation/get-author
+    #
+    # @return [Mangadex::Api::Response] with a collection of authors
+    sig { params(args: T::Api::Arguments).returns(Mangadex::Api::Response[Author]) }
+    def self.list(**args)
+      Mangadex::Internal::Request.get(
+        '/author',
+        Mangadex::Internal::Definition.validate(args, {
+          limit: { accepts: Integer },
+          offset: { accepts: Integer },
+          ids: { accepts: [String] },
+          name: { accepts: String },
+          order: { accepts: Hash },
+          includes: { accepts: [String] },
+        })
+      )
+    end
 
-      def create(**args)
-        Mangadex::Internal::Request.post(
-          '/author',
-          payload: Mangadex::Internal::Definition.validate(args, {
-            name: { accepts: String, required: true },
-            version: { accepts: Integer },
-          }),
-        )
-      end
+    # Create an author.
+    # Path: +POST /author+
+    # Reference: https://api.mangadex.org/docs.html#operation/post-author
+    #
+    # @return [Mangadex::Api::Response] with newly created author
+    sig { params(args: T::Api::Arguments).returns(Mangadex::Api::Response[Author]) }
+    def self.create(**args)
+      Mangadex::Internal::Request.post(
+        '/author',
+        payload: Mangadex::Internal::Definition.validate(args, {
+          name: { accepts: String, required: true },
+          version: { accepts: Integer },
+        })
+      )
+    end
 
-      def get(id, **args)
-        Mangadex::Internal::Request.get(
-          '/author/%{id}' % {id: id},
-          Mangadex::Internal::Definition.validate(args, {
-            includes: { accepts: [String] },
-          }),
-        )
-      end
+    # Get an author by ID.
+    # Path: +GET /author/:id+
+    # Reference: https://api.mangadex.org/docs.html#operation/get-author-id
+    #
+    # @return [Mangadex::Api::Response] with a entity of author
+    sig { params(id: String, args: T::Api::Arguments).returns(Mangadex::Api::Response[Author]) }
+    def self.get(id, **args)
+      Mangadex::Internal::Request.get(
+        format('/author/%{id}', id: id),
+        Mangadex::Internal::Definition.validate(args, {
+          includes: { accepts: [String] },
+        })
+      )
+    end
 
-      def update(id, **args)
-        Mangadex::Internal::Request.put(
-          '/author/%{id}' % {id: id},
-          payload: Mangadex::Internal::Definition.validate(args, {
-            name: { accepts: String },
-            version: { accepts: Integer, required: true },
-          }),
-        )
-      end
+    # Update an author.
+    # Path: +POST /author/:id+
+    # Reference: https://api.mangadex.org/docs.html#operation/put-author-id
+    #
+    # @return [Mangadex::Api::Response] with a entity of author
+    sig { params(id: String, args: T::Api::Arguments).returns(Mangadex::Api::Response[Author]) }
+    def self.update(id, **args)
+      Mangadex::Internal::Request.put(
+        format('/author/%{id}', id: id),
+        payload: Mangadex::Internal::Definition.validate(args, {
+          name: { accepts: String },
+          version: { accepts: Integer, required: true },
+        })
+      )
+    end
 
-      def delete(id)
-        Mangadex::Internal::Request.delete(
-          '/author/%{id}' % {id: id},
-        )
-      end
+    # Delete an author.
+    # Path: +DELETE /author/:id+
+    # Reference: https://api.mangadex.org/docs.html#operation/delete-author-id
+    #
+    # @param id Author's ID
+    # @return [Hash]
+    sig { params(id: String).returns(Hash) }
+    def self.delete(id)
+      Mangadex::Internal::Request.delete(
+        format('/author/%{id}', id: id)
+      )
     end
 
     def self.inspect_attributes
       [:name]
     end
 
+    # Indicates if this is an artist
+    #
+    # @return [Boolean] whether this is an artist or not.
+    sig { returns(T::Boolean) }
     def artist?
       false
     end

@@ -1,3 +1,4 @@
+# typed: false
 require "active_support/string_inquirer"
 require "active_support/core_ext/module/delegation"
 

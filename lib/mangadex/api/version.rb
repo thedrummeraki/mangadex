@@ -1,3 +1,4 @@
+# typed: true
 require "psych"
 
 module Mangadex

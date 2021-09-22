@@ -1,3 +1,4 @@
+# typed: false
 module Mangadex
   class Upload < MangadexObject
     has_attributes \

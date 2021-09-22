@@ -1,3 +1,4 @@
+# typed: false
 RSpec.describe Mangadex do
   it "has a version number" do
     expect(Mangadex::VERSION).not_to be nil

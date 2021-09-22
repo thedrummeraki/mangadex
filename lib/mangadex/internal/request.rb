@@ -1,3 +1,4 @@
+# typed: false
 require 'rest-client'
 require 'json'
 require 'active_support/core_ext/object/to_query'
@@ -12,33 +13,25 @@ module Mangadex
       attr_accessor :path, :headers, :payload, :method, :raw
       attr_reader :response
 
-      class << self
-        def get(path, params={}, headers: nil, raw: false)
-          new(path_with_params(path, params), method: :get, headers: headers, payload: nil).run!(raw: raw)
-        end
+      def self.get(path, params={}, auth: false, headers: nil, raw: false)
+        new(
+          path_with_params(path, params),
+          method: :get,
+          headers: headers,
+          payload: nil,
+        ).run!(raw: raw, auth: auth)
+      end
 
-        def post(path, headers: nil, payload: nil, raw: false)
-          new(path, method: :post, headers: headers, payload: payload).run!(raw: raw)
-        end
+      def self.post(path, headers: nil, auth: false, payload: nil, raw: false)
+        new(path, method: :post, headers: headers, payload: payload).run!(raw: raw, auth: auth)
+      end
 
-        def put(path, headers: nil, payload: nil, raw: false)
-          new(path, method: :put, headers: headers, payload: payload).run!(raw: raw)
-        end
+      def self.put(path, headers: nil, auth: false, payload: nil, raw: false)
+        new(path, method: :put, headers: headers, payload: payload).run!(raw: raw, auth: auth)
+      end
 
-        def delete(path, headers: nil, payload: nil, raw: false)
-          new(path, method: :delete, headers: headers, payload: payload).run!(raw: raw)
-        end
-        
-        private
-
-        def path_with_params(path, params)
-          return path if params.blank?
-
-          params = params.deep_transform_keys do |key|
-            key.to_s.camelize(:lower)
-          end
-          "#{path}?#{params.to_query}"
-        end
+      def self.delete(path, headers: nil, auth: false, payload: nil, raw: false)
+        new(path, method: :delete, headers: headers, payload: payload).run!(raw: raw, auth: auth)
       end
 
       def initialize(path, method:, headers: nil, payload: nil)
@@ -57,9 +50,12 @@ module Mangadex
         )
       end
 
-      def run!(raw: false)
+      def run!(raw: false, auth: false)
         payload_details = request_payload ? "Payload: #{request_payload}" : "{no-payload}"
         puts("[#{self.class.name}] #{method.to_s.upcase} #{request_url} #{payload_details}")
+
+        raise Mangadex::UserNotLoggedIn.new if auth && Mangadex::Api::Context.user.nil?
+
         start_time = Time.now
 
         @response = request.execute
@@ -79,6 +75,15 @@ module Mangadex
       end
 
       private
+
+      def self.path_with_params(path, params)
+        return path if params.blank?
+
+        params = params.deep_transform_keys do |key|
+          key.to_s.camelize(:lower)
+        end
+        "#{path}?#{params.to_query}"
+      end
 
       def request_url
         request_path = path.start_with?('/') ? path : "/#{path}"

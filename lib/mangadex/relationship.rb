@@ -1,3 +1,4 @@
+# typed: false
 module Mangadex
   class Relationship < MangadexObject
     attr_accessor :id, :type, :attributes

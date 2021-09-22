@@ -1,4 +1,6 @@
+# typed: strict
 # Utilitary classes
+require_relative "sorbet"
 require_relative "content_rating"
 require_relative "mangadex_object"
 

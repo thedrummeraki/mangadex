@@ -1,8 +1,10 @@
+# typed: false
 require "active_support/inflector"
 require_relative "internal/with_attributes"
 
 module Mangadex
   class MangadexObject
+    extend T::Sig
     include Internal::WithAttributes
 
     def self.attributes_to_inspect

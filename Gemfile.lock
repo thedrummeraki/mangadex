@@ -5,6 +5,7 @@ PATH
       activesupport (~> 6.1)
       psych (~> 4.0.1)
       rest-client (~> 2.1)
+      sorbet-runtime
 
 GEM
   remote: https://rubygems.org/
@@ -54,6 +55,10 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
     rspec-support (3.10.2)
+    sorbet (0.5.9147)
+      sorbet-static (= 0.5.9147)
+    sorbet-runtime (0.5.9147)
+    sorbet-static (0.5.9147-universal-darwin-20)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
     unf (0.1.4)
@@ -70,6 +75,7 @@ DEPENDENCIES
   pry
   rake (~> 10.0)
   rspec (~> 3.0)
+  sorbet
 
 BUNDLED WITH
    2.2.19

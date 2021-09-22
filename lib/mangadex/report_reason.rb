@@ -1,3 +1,4 @@
+# typed: true
 module Mangadex
   class ReportReason < MangadexObject
     has_attributes \

@@ -1,3 +1,4 @@
+# typed: false
 module Mangadex
   class ScanlationGroup < MangadexObject
     has_attributes \

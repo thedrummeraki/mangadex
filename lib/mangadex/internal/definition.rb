@@ -1,3 +1,4 @@
+# typed: true
 module Mangadex
   module Internal
     class Definition

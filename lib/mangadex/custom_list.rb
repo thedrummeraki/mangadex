@@ -1,3 +1,4 @@
+# typed: false
 require_relative "mangadex_object"
 
 module Mangadex

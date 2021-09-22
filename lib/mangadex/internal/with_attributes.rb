@@ -1,3 +1,5 @@
+# typed: false
+
 require "active_support/hash_with_indifferent_access"
 
 module Mangadex
@@ -37,8 +39,9 @@ module Mangadex
             target_attributes_class_name.constantize
           else
             class_contents = <<-END
+              # typed: true
               class ::#{target_attributes_class_name} < MangadexObject
-                #{USING_ATTRIBUTES[klass_name].map { |attribute| "attr_accessor(:#{attribute})" }.join(';')}
+                #{USING_ATTRIBUTES[klass_name].map {|attribute| "sig { returns(T.untyped) }; attr_accessor(:#{attribute})"}.join(';')}
 
                 def self.attributes_to_inspect
                   #{USING_ATTRIBUTES[klass_name]}
