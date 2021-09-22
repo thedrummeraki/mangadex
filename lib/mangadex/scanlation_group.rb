@@ -12,6 +12,7 @@ module Mangadex
       :locked,
       :official,
       :verified,
+      :focused_language,
       :version,
       :created_at,
       :updated_at
