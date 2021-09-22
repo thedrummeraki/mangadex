@@ -32,5 +32,11 @@ module T
         Mangadex::Api::Response,
       )
     end
+    ContentRating = T.type_alias do
+      T.any(
+        String,
+        ::Mangadex::ContentRating,
+      )
+    end
   end
 end
