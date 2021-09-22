@@ -4,6 +4,7 @@ require "active_support/core_ext/module/delegation"
 
 module Mangadex
   class ContentRating
+    extend T::Sig
     include Comparable
 
     VALUES = [
