@@ -127,9 +127,16 @@ module Mangadex
     end
 
     sig { params(id: String).returns(T::Api::GenericResponse) }
-    def self.all_reading_status(id)
+    def self.reading_status(id)
       Mangadex::Internal::Request.get(
         '/manga/%{id}/status' % {id: id},
+      )
+    end
+
+    sig { returns(T::Api::GenericResponse) }
+    def self.all_reading_status
+      Mangadex::Internal::Request.get(
+        '/manga/status',
       )
     end
 
