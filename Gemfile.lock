@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    mangadex (5.3.0)
+    mangadex (5.3.1)
       activesupport (~> 6.1)
       psych (~> 4.0.1)
       rest-client (~> 2.1)
@@ -55,15 +55,15 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
     rspec-support (3.10.2)
-    sorbet (0.5.9147)
-      sorbet-static (= 0.5.9147)
-    sorbet-runtime (0.5.9147)
-    sorbet-static (0.5.9147-universal-darwin-20)
+    sorbet (0.5.9152)
+      sorbet-static (= 0.5.9152)
+    sorbet-runtime (0.5.9152)
+    sorbet-static (0.5.9152-universal-darwin-20)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
     unf (0.1.4)
       unf_ext
-    unf_ext (0.0.7.7)
+    unf_ext (0.0.8)
     zeitwerk (2.4.2)
 
 PLATFORMS
