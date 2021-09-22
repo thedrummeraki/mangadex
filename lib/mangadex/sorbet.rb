@@ -4,7 +4,16 @@
 
 module T
   module Api
-    Arguments = T.type_alias { T.any(String, T::Array[String], Integer, T::Hash[String, String]) }
+    Text = T.type_alias { T.any(String, Symbol) }
+
+    Arguments = T.type_alias do
+      T.any(
+        Text,
+        T::Array[Text],
+        Integer,
+        T::Hash[Text, Text],
+      )
+    end
     MangaResponse = T.type_alias do
       T.any(
         Mangadex::Api::Response[Mangadex::Manga],

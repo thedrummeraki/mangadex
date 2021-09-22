@@ -85,7 +85,7 @@ module Mangadex
               extra_elements = value - accepts
               return if extra_elements.empty?
               raise ArgumentError, "Expected elements in :#{key} to be one of #{accepts}, but found #{extra_elements}"
-            elsif !accepts.include?(value)
+            elsif !(value.nil? || (value.respond_to?(:empty?) && value.empty?)) && !accepts.include?(value)
               raise ArgumentError, "Expected :#{key} to be one of #{accepts}, but got #{@raw_value}:#{@raw_value.class}"
             end
           end

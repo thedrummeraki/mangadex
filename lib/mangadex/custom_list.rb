@@ -8,7 +8,18 @@ module Mangadex
       :visibility,
       :version
 
-    def self.create
+    sig { params(args: T::Api::Arguments).returns(Mangadex::Api::Response[CustomList]) }
+    def self.create(**args)
+      Mangadex::Internal::Request.post(
+        '/list',
+        payload: Mangadex::Internal::Definition.validate(args, {
+          name: { accepts: String, required: true },
+          visibility: { accepts: %w(public private), converts: :to_s },
+          manga: { accepts: String },
+          version: { accepts: Integer },
+        }),
+        auth: true,
+      )
     end
 
     sig { params(id: String).returns(Mangadex::Api::Response[CustomList]) }
@@ -102,10 +113,10 @@ module Mangadex
       Mangadex::CustomList.remove_manga(id, list_id: self.id)
     end
 
-    sig { params(args: T::Api::Arguments).returns(Mangadex::Api::Response[Manga]) }
+    sig { params(args: T::Api::Arguments).returns(T.nilable(Mangadex::Api::Response[Manga])) }
     def manga_details(**args)
       ids = mangas.map(&:id)
-      ids.any? ? Mangadex::Manga.list(**args.merge(ids: ids)) : []
+      ids.any? ? Mangadex::Manga.list(**args.merge(ids: ids)) : nil
     end
 
     def self.inspect_attributes
