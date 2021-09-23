@@ -2,50 +2,60 @@
 module Mangadex
   module Api
     class Context
+      extend T::Sig
+
       @@user = nil
+      @@version = nil
 
-      class << self
-        def user
-          @@user&.with_valid_session
-        end
+      sig { returns(T.nilable(String)) }
+      def self.version
+        return @@version unless @@version.nil?
 
-        def user=(user)
-          if user.is_a?(Mangadex::Api::User)
-            @@user = user
-          elsif user.is_a?(Mangadex::User)
-            @@user = Mangadex::Api::User.new(
-              user.id,
-              data: user,
-            )
-          elsif user.is_a?(Hash)
-            user = user.with_indifferent_access
+        @@version = Mangadex::Api::Version.check_mangadex_version
+      end
 
-            @@user = Mangadex::Api::User.new(
-              user[:mangadex_user_id],
-              session: user[:session],
-              refresh: user[:refresh],
-            )
-          elsif user.nil?
-            @@user = nil
-          else
-            raise ArgumentError, "Must be an instance of #{Mangadex::Api::User}, #{Mangadex::User} or Hash"
-          end
-        end
+      sig { returns(T.nilable(Mangadex::Api::User)) }
+      def self.user
+        @@user&.with_valid_session
+      end
 
-        def with_user(user)
-          current_user = @@user
+      sig { params(user: T.nilable(T.any(Hash, Mangadex::Api::User, Mangadex::User))).void }
+      def self.user=(user)
+        if user.is_a?(Mangadex::Api::User)
           @@user = user
-          response = yield
-          @@user = current_user
-          response
-        ensure
-          @@user = current_user
-        end
+        elsif user.is_a?(Mangadex::User)
+          @@user = Mangadex::Api::User.new(
+            user.id,
+            data: user,
+          )
+        elsif user.is_a?(Hash)
+          user = user.with_indifferent_access
 
-        def without_user
-          with_user(nil) do
-            yield
-          end
+          @@user = Mangadex::Api::User.new(
+            user[:mangadex_user_id],
+            session: user[:session],
+            refresh: user[:refresh],
+          )
+        elsif user.nil?
+          @@user = nil
+        end
+      end
+
+      sig { params(user: T.nilable(T.any(Hash, Mangadex::Api::User, Mangadex::User)), block: T.proc.returns(T.untyped)).returns(T.untyped) }
+      def self.with_user(user, &block)
+        current_user = @@user
+        @@user = user
+        response = yield
+        @@user = current_user
+        response
+      ensure
+        @@user = current_user
+      end
+
+      sig { params(block: T.proc.returns(T.untyped)).returns(T.untyped) }
+      def self.without_user(&block)
+        with_user(nil) do
+          yield
         end
       end
     end

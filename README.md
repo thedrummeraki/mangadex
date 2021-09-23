@@ -1,4 +1,4 @@
-![latest version](https://badgen.net/rubygems/v/mangadex)
+<a href="https://rubygems.org/gems/mangadex"><img src="https://badgen.net/rubygems/v/mangadex" /></a>
 
 # Mangadex
 
