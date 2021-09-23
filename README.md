@@ -1,3 +1,5 @@
+![latest version](https://badgen.net/rubygems/v/mangadex)
+
 # Mangadex
 
 Welcome to `mangadex`, your next favourite Ruby gem for interacting with [Mangadex](https://mangadex.org).
