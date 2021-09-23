@@ -22,7 +22,7 @@ Or install it yourself as:
 
 ## Usage
 
-Please note that I tried my best to follow Mangadex's naming conventions for [their documentation](https://api.mangadex.org).
+Please note that I tried my best to follow Mangadex's naming conventions for [their documentation](https://api.mangadex.org). Track the progress [here in an issue](https://github.com/thedrummeraki/mangadex/issues/5).
 To find out how to use the gem, you're welcome to [check this out](lib/mangadex).
 
 ## Development
