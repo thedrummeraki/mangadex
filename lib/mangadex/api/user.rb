@@ -2,9 +2,12 @@
 module Mangadex
   module Api
     class User
+      extend T::Sig
+
       attr_accessor :mangadex_user_id, :session, :refresh, :session_valid_until
       attr_reader :data
 
+      sig { params(mangadex_user_id: String, session: T.nilable(String), refresh: T.nilable(String), data: T.untyped).void }
       def initialize(mangadex_user_id, session: nil, refresh: nil, data: nil)
         raise ArgumentError, 'Missing mangadex_user_id' if mangadex_user_id.to_s.empty?
 
@@ -15,9 +18,9 @@ module Mangadex
         @data = data
       end
 
-      # nil: Nothing happened, no need to refresh the token
       # true: The tokens were successfully refreshed
       # false: Error: refresh token empty or could not refresh the token on the server
+      sig { returns(T::Boolean) }
       def refresh!
         return false if refresh.nil?
 
@@ -33,6 +36,7 @@ module Mangadex
         true
       end
 
+      sig { returns(Mangadex::Api::User) }
       def with_valid_session
         session_expired? && refresh!
         self
@@ -40,6 +44,7 @@ module Mangadex
         self
       end
 
+      sig { returns(T::Boolean) }
       def session_expired?
         @session_valid_until.nil? || @session_valid_until <= Time.now
       end

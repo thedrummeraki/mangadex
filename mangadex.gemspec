@@ -5,7 +5,7 @@ require "mangadex/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "mangadex"
-  spec.version       = Mangadex::VERSION
+  spec.version       = Mangadex::Version::FULL
   spec.authors       = ["Akinyele Cafe-Febrissy"]
   spec.email         = ["me@akinyele.ca"]
 
