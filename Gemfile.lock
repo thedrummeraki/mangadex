@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    mangadex (5.3.1.1)
+    mangadex (5.3.1.2)
       activesupport (~> 6.1)
       psych (~> 4.0.1)
       rest-client (~> 2.1)
@@ -57,7 +57,7 @@ GEM
     rspec-support (3.10.2)
     sorbet (0.5.9152)
       sorbet-static (= 0.5.9152)
-    sorbet-runtime (0.5.9152)
+    sorbet-runtime (0.5.9155)
     sorbet-static (0.5.9152-universal-darwin-20)
     sorbet-static (0.5.9152-x86_64-linux)
     tzinfo (2.0.4)
