@@ -1,7 +1,36 @@
 module Factories
+  # Usage:
+  # This was designed to be used the request interceptors, but
+  # all methods that return "records" can be used anywhered in the
+  # tests.
+  # 
+  # # Gets a list of 20 records of type "manga".
+  # Factories::Builder.list('manga', 20) do |index|
+  #   {
+  #     attributes: {
+  #       title: { "en" => "Manga Title #{index}" },
+  #       description: { "en" => "Manga Description #{index}" },
+  #       content_rating: "safe",
+  #     }
+  #   }
+  # end
+  #
+  # # Gets a record of type "manga" with ID "manga-id".
+  # Factories::Builder.entity('manga', 'manga-id') do |index|
+  #   {
+  #     title: {"en" => "My title"}
+  #   }
+  # end
+  #
+  # # Return a list of 5 Mangadex errors, that ended with HTTP status 418
+  # Factories::Builder.error(418, 5) do |index|
+  #   {
+  #     id: "error-#{index}",
+  #     status: "my error",
+  #   }
+  # end
+
   class Builder
-    class MockResponse < Mangadex::Api::Response; end
-    
     def self.list(record_type, count=10, result: 'ok', offset: 0, total: 10, &block)
       {
         result: result,
