@@ -34,8 +34,6 @@ RSpec.describe Mangadex::Manga do
 
     interceptor.intercept do
       response = Mangadex::Manga.list
-
-      binding.irb
     end
   end
 end

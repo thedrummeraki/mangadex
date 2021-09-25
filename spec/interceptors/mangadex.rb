@@ -1,3 +1,5 @@
+# require 'securerandom'
+
 module Interceptors
   class Mangadex < Base
     match(%{api\.mangadex\.org})
@@ -21,6 +23,16 @@ module Interceptors
           title: {"en" => "My title"}
         }
       end
+    end
+
+    post '/auth/login' do
+      {
+        result: 'ok',
+        token: {
+          session: SecureRandom.uuid,
+          refresh: SecureRandom.uuid,
+        }
+      }
     end
   end
 end
