@@ -1,3 +1,5 @@
+# typed: ignore
+
 RSpec.describe Mangadex::Internal::WithAttributes do
   # We need to use Mangadex::MangadexObject to have a few easy to
   # use constructor.

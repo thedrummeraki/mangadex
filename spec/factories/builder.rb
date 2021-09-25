@@ -1,3 +1,5 @@
+# typed: ignore
+
 module Factories
   # Usage:
   # This was designed to be used the request interceptors, but

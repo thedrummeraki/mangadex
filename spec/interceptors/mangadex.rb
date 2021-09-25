@@ -1,4 +1,4 @@
-# require 'securerandom'
+# typed: ignore
 
 module Interceptors
   class Mangadex < Base

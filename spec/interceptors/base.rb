@@ -1,3 +1,5 @@
+# typed: ignore
+
 module Interceptors
   class Base < RequestInterceptor::Application
     before do

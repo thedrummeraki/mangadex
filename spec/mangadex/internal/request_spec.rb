@@ -1,3 +1,5 @@
+# typed: ignore
+
 RSpec.describe Mangadex::Internal::Request do
   it 'performs a get request' do
     with_interceptor do
