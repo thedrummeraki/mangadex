@@ -1,4 +1,4 @@
-# typed: false
+# typed: ignore
 
 RSpec.describe Mangadex::Manga do
   it "lists all manga" do

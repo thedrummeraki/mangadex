@@ -1,3 +1,5 @@
+# typed: ignore
+
 module Mock
   class User
     def self.with_logged_in_user(&block)
