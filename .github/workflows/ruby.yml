@@ -32,3 +32,5 @@ jobs:
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
       - name: Run tests
         run: bundle exec rspec
+      - name: Run sorbet typecheck
+        run: bundle exec srb tc
