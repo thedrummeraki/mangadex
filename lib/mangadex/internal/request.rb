@@ -68,7 +68,7 @@ module Mangadex
         end
       rescue RestClient::Exception => error
         if error.response.body
-          raw ? error.response.body : Mangadex::Api::Response.coerce(JSON.parse(error.response.body))
+          raw ? error.response.body : Mangadex::Api::Response.coerce(JSON.parse(error.response.body)) rescue raise error
         else
           raise error
         end

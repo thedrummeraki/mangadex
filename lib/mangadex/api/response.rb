@@ -40,6 +40,10 @@ module Mangadex
         end
       end
 
+      def errored?
+        Array(errors).any?
+      end
+
       private
 
       def self.coerce_errors(data)
@@ -94,10 +98,6 @@ module Mangadex
             )
           ),
         )
-      end
-
-      def errored?
-        Array(errors).any?
       end
     end
   end
