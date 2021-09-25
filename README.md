@@ -1,4 +1,4 @@
-<a href="https://rubygems.org/gems/mangadex"><img src="https://badgen.net/rubygems/v/mangadex" /></a>
+[![Ruby](https://github.com/thedrummeraki/mangadex/actions/workflows/ruby.yml/badge.svg)](https://github.com/thedrummeraki/mangadex/actions/workflows/ruby.yml)<a href="https://rubygems.org/gems/mangadex"><img src="https://badgen.net/rubygems/v/mangadex" /></a>
 
 # Mangadex
 
