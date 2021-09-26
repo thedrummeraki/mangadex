@@ -4,7 +4,24 @@ require_relative 'mangadex_object'
 
 module Mangadex
   class Author < MangadexObject
-    has_attributes :name, :image_url, :biography, :version, :created_at, :updated_at
+    has_attributes \
+      :name,
+      :image_url,
+      :biography,
+      :twitter,
+      :pixiv,
+      :melon_book,
+      :fan_box,
+      :booth,
+      :nicovideo,
+      :skeb,
+      :fantia,
+      :tumblr,
+      :youtube,
+      :website,
+      :version,
+      :created_at,
+      :updated_at
 
     # List all authors.
     # Path: +GET /author+

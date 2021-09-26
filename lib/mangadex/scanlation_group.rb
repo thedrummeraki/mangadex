@@ -3,6 +3,7 @@ module Mangadex
   class ScanlationGroup < MangadexObject
     has_attributes \
       :name,
+      :alt_names,
       :website,
       :irc_channel,
       :irc_server,
