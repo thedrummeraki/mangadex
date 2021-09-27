@@ -64,7 +64,7 @@ module Mangadex
 
     private
 
-    sig { params(value: T.any(T::Api::Text, T::Api::ContentRating)).void }
+    sig { params(value: T.any(T::Api::Text, T::Api::ContentRating)).returns(T.any(T::Api::Text, T::Api::ContentRating)) }
     def ensure_value!(value)
       return value if value.is_a?(ContentRating)
       return value if VALUES.include?(value)

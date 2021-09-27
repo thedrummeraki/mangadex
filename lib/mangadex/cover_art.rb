@@ -47,6 +47,8 @@ module Mangadex
 
     sig { params(id: String, args: T::Api::Arguments).returns(Mangadex::Api::Response[CoverArt]) }
     def self.get(id, **args)
+      Mangadex::Internal::Definition.must(id)
+
       Mangadex::Internal::Request.get(
         '/cover/%{id}' % {id: id},
         Mangadex::Internal::Definition.validate(args, {
@@ -57,6 +59,8 @@ module Mangadex
 
     sig { params(id: String, args: T::Api::Arguments).returns(Mangadex::Api::Response[CoverArt]) }
     def self.edit(id, **args)
+      Mangadex::Internal::Definition.must(id)
+
       Mangadex::Internal::Request.put(
         '/cover/%{id}' % {id: id},
         Mangadex::Internal::Definition.validate(args, {
@@ -69,9 +73,16 @@ module Mangadex
 
     sig { params(id: String).returns(Hash) }
     def self.delete(id)
+      Mangadex::Internal::Definition.must(id)
+
       Mangadex::Internal::Request.delete(
         '/cover/%{id}' % {id: id},
       )
+    end
+
+    class << self
+      alias_method :view, :get
+      alias_method :update, :edit
     end
 
     sig { params(size: T::Api::Text).returns(T.nilable(String)) }

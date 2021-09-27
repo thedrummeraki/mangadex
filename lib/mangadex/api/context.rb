@@ -6,6 +6,7 @@ module Mangadex
 
       @@user = nil
       @@version = nil
+      @@force_raw_requests = nil
 
       sig { returns(T.nilable(String)) }
       def self.version
@@ -57,6 +58,32 @@ module Mangadex
         with_user(nil) do
           yield
         end
+      end
+
+      def self.force_raw_requests(&block)
+        if block_given?
+          temp_force_raw_requests do
+            yield
+          end
+        else
+          !!@@force_raw_requests
+        end
+      end
+
+      def self.force_raw_requests=(value)
+        @@force_raw_requests = value
+      end
+
+      private
+
+      def self.temp_force_raw_requests(&block)
+        current_force_raw_requests = @@force_raw_requests
+        @@force_raw_requests = true
+        response = yield
+        @@force_raw_requests = current_force_raw_requests
+        response
+      ensure
+        @@force_raw_requests = current_force_raw_requests
       end
     end
   end

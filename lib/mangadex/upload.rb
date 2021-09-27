@@ -28,6 +28,8 @@ module Mangadex
       alias_method :begin, :start
 
       def upload_images(upload_session_id)
+        Mangadex::Internal::Definition.must(upload_session_id)
+
         Mangadex::Internal::Request.post(
           '/upload/%{upload_session_id}' % {upload_session_id: upload_session_id},
           payload: Mangadex::Internal::Definition.validate(args, {
@@ -37,6 +39,8 @@ module Mangadex
       end
 
       def abandon(upload_session_id)
+        Mangadex::Internal::Definition.must(upload_session_id)
+
         Mangadex::Internal::Request.delete(
           '/upload/%{upload_session_id}' % {upload_session_id: upload_session_id},
         )
@@ -44,6 +48,8 @@ module Mangadex
       alias_method :stop, :abandon
 
       def commit(upload_session_id, **args)
+        Mangadex::Internal::Definition.must(upload_session_id)
+
         Mangadex::Internal::Request.post(
           '/upload/%{upload_session_id}/commit' % {upload_session_id: upload_session_id},
           payload: Mangadex::Internal::Definition.validate(args, {
@@ -54,6 +60,8 @@ module Mangadex
       end
 
       def delete_uploaded_image(upload_session_id, upload_session_file_id)
+        Mangadex::Internal::Definition.must(upload_session_id)
+
         Mangadex::Internal::Request.delete(
           '/upload/%{upload_session_id}/%{upload_session_file_id}' % {
             upload_session_id: upload_session_id,
@@ -63,6 +71,8 @@ module Mangadex
       end
 
       def delete_uploaded_images(upload_session_id, upload_session_file_ids)
+        Mangadex::Internal::Definition.must(upload_session_id)
+
         Mangadex::Internal::Request.delete(
           '/upload/%{upload_session_id}' % {upload_session_id: upload_session_id},
           payload: Array(upload_session_file_id),

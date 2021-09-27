@@ -66,6 +66,8 @@ module Mangadex
     # @return [Mangadex::Api::Response] with a entity of author
     sig { params(id: String, args: T::Api::Arguments).returns(Mangadex::Api::Response[Author]) }
     def self.get(id, **args)
+      Mangadex::Internal::Definition.must(id)
+
       Mangadex::Internal::Request.get(
         format('/author/%{id}', id: id),
         Mangadex::Internal::Definition.validate(args, {
@@ -81,6 +83,8 @@ module Mangadex
     # @return [Mangadex::Api::Response] with a entity of author
     sig { params(id: String, args: T::Api::Arguments).returns(Mangadex::Api::Response[Author]) }
     def self.update(id, **args)
+      Mangadex::Internal::Definition.must(id)
+
       Mangadex::Internal::Request.put(
         format('/author/%{id}', id: id),
         payload: Mangadex::Internal::Definition.validate(args, {
@@ -98,6 +102,8 @@ module Mangadex
     # @return [Hash]
     sig { params(id: String).returns(Hash) }
     def self.delete(id)
+      Mangadex::Internal::Definition.must(id)
+
       Mangadex::Internal::Request.delete(
         format('/author/%{id}', id: id)
       )
@@ -105,6 +111,10 @@ module Mangadex
 
     def self.inspect_attributes
       [:name]
+    end
+
+    class << self
+      alias_method :view, :get
     end
 
     # Indicates if this is an artist
