@@ -13,7 +13,7 @@ module Mangadex
       :melon_book,
       :fan_box,
       :booth,
-      :nicovideo,
+      :nico_video,
       :skeb,
       :fantia,
       :tumblr,
