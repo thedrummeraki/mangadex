@@ -7,6 +7,7 @@ module Mangadex
 
       attr_accessor :result, :response, :errors, :data
       attr_accessor :limit, :offset, :total
+      attr_accessor :raw_data
 
       def self.attributes_to_inspect
         %i(result errors limit offset total data)
@@ -44,6 +45,10 @@ module Mangadex
         Array(errors).any?
       end
 
+      def as_json(*)
+        Hash(raw_data)
+      end
+
       private
 
       def self.coerce_errors(data)
@@ -60,6 +65,7 @@ module Mangadex
               )
             end
           ),
+          raw_data: data,
         )
       end
 
@@ -75,6 +81,7 @@ module Mangadex
           result: data['result'],
           response: data['response'],
           data: klass.from_data(data['data'] || data),
+          raw_data: data,
         )
       end
 
@@ -97,6 +104,7 @@ module Mangadex
               end
             )
           ),
+          raw_data: data,
         )
       end
     end

@@ -48,6 +48,8 @@ module Mangadex
       end
 
       def view(id)
+        Mangadex::Internal::Definition.must(id)
+
         Mangadex::Internal::Request.get(
           '/group/%{id}' % {id: id},
           Mangadex::Internal::Definition.validate(args, {
@@ -90,6 +92,11 @@ module Mangadex
           '/group/%{id}/follow' % {id: id},
         )
       end
+    end
+
+    class << self
+      alias_method :get, :view
+      alias_method :edit, :update
     end
 
     def self.inspect_attributes

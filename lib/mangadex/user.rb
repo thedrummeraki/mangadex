@@ -30,6 +30,8 @@ module Mangadex
 
     sig { params(id: String).returns(T::Boolean) }
     def self.follows_group(id)
+      Mangadex::Internal::Definition.must(id)
+
       data = Mangadex::Internal::Request.get(
         '/user/follows/group/%{id}' % {id: id},
         raw: true,
@@ -55,6 +57,8 @@ module Mangadex
 
     sig { params(id: String).returns(T::Boolean) }
     def self.follows_user(id)
+      Mangadex::Internal::Definition.must(id)
+
       return if Mangadex::Api::Context.user.nil?
 
       data = Mangadex::Internal::Request.get(
@@ -83,6 +87,8 @@ module Mangadex
 
     sig { params(id: String).returns(T::Boolean) }
     def self.follows_manga(id)
+      Mangadex::Internal::Definition.must(id)
+
       return if Mangadex::Api::Context.user.nil?
 
       data = Mangadex::Internal::Request.get(

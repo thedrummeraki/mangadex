@@ -62,13 +62,15 @@ module Mangadex
         end_time = Time.now
         elapsed_time = ((end_time - start_time) * 1000).to_i
         puts("[#{self.class.name}] took #{elapsed_time} ms")
+        
+        raw_request = raw || Mangadex::Api::Context.force_raw_requests
 
-        if @response.body
-          raw ? @response.body : Mangadex::Api::Response.coerce(JSON.parse(@response.body))
+        if (body = @response.body)
+          raw_request ? try_json(body) : Mangadex::Api::Response.coerce(try_json(body))
         end
       rescue RestClient::Exception => error
-        if error.response.body
-          raw ? error.response.body : Mangadex::Api::Response.coerce(JSON.parse(error.response.body)) rescue raise error
+        if (body = error.response.body)
+          raw_request ? try_json(body) : Mangadex::Api::Response.coerce(JSON.parse(body)) rescue raise error
         else
           raise error
         end
@@ -115,6 +117,12 @@ module Mangadex
         return clean_method if ALLOWED_METHODS.include?(clean_method)
 
         raise "Invalid method: #{method}. Must be one of: #{ALLOWED_METHODS}"
+      end
+
+      def try_json(body)
+        JSON.parse(body)
+      rescue JSON::ParserError
+        body
       end
     end
   end

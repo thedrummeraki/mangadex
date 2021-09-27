@@ -24,6 +24,8 @@ module Mangadex
 
     sig { params(id: String).returns(Mangadex::Api::Response[CustomList]) }
     def self.get(id)
+      Mangadex::Internal::Definition.must(id)
+
       Mangadex::Internal::Request.get(
         '/list/%{id}' % {id: id},
       )
@@ -31,6 +33,8 @@ module Mangadex
 
     sig { params(id: String, args: T::Api::Arguments).returns(Mangadex::Api::Response[CustomList]) }
     def self.update(id, **args)
+      Mangadex::Internal::Definition.must(id)
+
       Mangadex::Internal::Request.put(
         '/list/%{id}' % {id: id},
         payload: Mangadex::Internal::Definition.validate(args, {
@@ -44,6 +48,8 @@ module Mangadex
 
     sig { params(id: String).returns(T::Boolean) }
     def self.delete(id)
+      Mangadex::Internal::Definition.must(id)
+
       Mangadex::Internal::Request.delete(
         '/list/%{id}' % {id: id},
       )
@@ -51,6 +57,8 @@ module Mangadex
 
     sig { params(id: String, args: T::Api::Arguments).returns(Mangadex::Api::Response[Chapter]) }
     def self.feed(id, **args)
+      Mangadex::Internal::Definition.must(id)
+
       Mangadex::Internal::Request.get(
         '/list/%{id}/feed' % {id: id},
         Mangadex::Internal::Definition.chapter_list(args),
@@ -59,6 +67,8 @@ module Mangadex
 
     sig { params(id: String, list_id: String).returns(T::Boolean) }
     def self.add_manga(id, list_id:)
+      Mangadex::Internal::Definition.must(id)
+
       response = Mangadex::Internal::Request.post(
         '/manga/%{id}/list/%{list_id}' % {id: id, list_id: list_id},
       )
@@ -71,6 +81,8 @@ module Mangadex
 
     sig { params(id: String, list_id: String).returns(T::Boolean) }
     def self.remove_manga(id, list_id:)
+      Mangadex::Internal::Definition.must(id)
+
       response = Mangadex::Internal::Request.delete(
         '/manga/%{id}/list/%{list_id}' % {id: id, list_id: list_id},
       )
@@ -94,6 +106,8 @@ module Mangadex
 
     sig { params(user_id: String, args: T::Api::Arguments).returns(Mangadex::Api::Response[CustomList]) }
     def self.user_list(user_id, **args)
+      Mangadex::Internal::Definition.must(user_id)
+
       Mangadex::Internal::Request.get(
         '/user/%{id}/list' % {id: user_id},
         Mangadex::Internal::Definition.validate(args, {
@@ -101,6 +115,11 @@ module Mangadex
           offset: { accepts: Integer },
         }),
       )
+    end
+
+    class << self
+      alias_method :view, :get
+      alias_method :edit, :update
     end
 
     sig { params(id: String).returns(T::Boolean) }

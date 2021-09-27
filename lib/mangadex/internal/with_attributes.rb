@@ -11,7 +11,8 @@ module Mangadex
           :id,
           :type,
           :attributes,
-          :relationships
+          :relationships,
+          :related_type
       
       class_methods do
         USING_ATTRIBUTES = {}
@@ -30,7 +31,7 @@ module Mangadex
           self.name.split('::').last.underscore
         end
 
-        def from_data(data)
+        def from_data(data, related_type: nil)
           base_class_name = self.name.gsub('::', '_')
           klass_name = self.name
           target_attributes_class_name = "#{base_class_name}_Attributes"
@@ -65,6 +66,7 @@ module Mangadex
             id: data['id'],
             type: data['type'] || self.type,
             attributes: attributes,
+            related_type: related_type,
           }
 
           initialize_hash.merge!({relationships: relationships}) if relationships.present?
@@ -110,6 +112,13 @@ module Mangadex
             else
               super
             end
+          elsif !related_type.nil?
+            return super unless method_name.end_with?("?")
+
+            looking_for_related = method_name.to_s.split("?").first
+            return super unless Mangadex::Relationship::RELATED_VALUES.include?(looking_for_related)
+
+            related_type == looking_for_related
           else
             super
           end

@@ -1,32 +1,44 @@
 # typed: false
 module Mangadex
   class Relationship < MangadexObject
-    attr_accessor :id, :type, :attributes
+    attr_accessor :id, :type, :related, :attributes
+
+    RELATED_VALUES = %w(
+      monochrome
+      main_story
+      adapted_from
+      based_on
+      prequel
+      side_story
+      doujinshi
+      same_franchise
+      shared_universe
+      sequel
+      spin_off
+      alternate_story
+      preserialization
+      colored
+      serialization
+    ).freeze
 
     class << self
       def from_data(data)
         data = data.with_indifferent_access
         klass = class_for_relationship_type(data['type'])
 
-        return klass.from_data(data) if klass && data['attributes']&.any?
+        if klass && data['attributes']&.any?
+          return klass.from_data(data, related_type: data['related'])
+        end
 
         new(
           id: data['id'],
           type: data['type'],
           attributes: OpenStruct.new(data['attributes']),
+          related: data['related'],
         )
       end
 
       private
-
-      def build_attributes(data)
-        klass = class_for_relationship_type(data['type'])
-        if klass.present?
-          klass.from_data(data)
-        else
-          OpenStruct.new(data['attributes'])
-        end
-      end
 
       def class_for_relationship_type(type)
         module_parts = self.name.split('::')
@@ -39,8 +51,18 @@ module Mangadex
       end
     end
 
-    def inspect
-      "#<#{self.class} id=#{id.inspect} type=#{type.inspect}>"
+    def self.attributes_to_inspect
+      [:id, :type, :related]
+    end
+
+    
+    def method_missing(value)
+      return super unless value.end_with?("?")
+
+      looking_for_related = value.to_s.split("?").first
+      return super unless RELATED_VALUES.include?(looking_for_related)
+
+      !related.nil? && related == looking_for_related
     end
   end
 end

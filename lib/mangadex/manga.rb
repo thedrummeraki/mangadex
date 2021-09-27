@@ -66,6 +66,8 @@ module Mangadex
 
     sig { params(id: String, args: T::Api::Arguments).returns(T::Api::MangaResponse) }
     def self.view(id, **args)
+      Mangadex::Internal::Definition.must(id)
+
       Mangadex::Internal::Request.get(
         '/manga/%{id}' % {id: id},
         Mangadex::Internal::Definition.validate(args, {
@@ -76,6 +78,8 @@ module Mangadex
 
     sig { params(id: String).returns(T.any(Hash, Mangadex::Api::Response)) }
     def self.unfollow(id)
+      Mangadex::Internal::Definition.must(id)
+
       Mangadex::Internal::Request.delete(
         '/manga/%{id}/follow' % {id: id},
       )
@@ -83,6 +87,8 @@ module Mangadex
 
     sig { params(id: String).returns(T.any(Hash, Mangadex::Api::Response)) }
     def self.follow(id)
+      Mangadex::Internal::Definition.must(id)
+
       Mangadex::Internal::Request.post(
         '/manga/%{id}/follow' % {id: id},
       )
@@ -90,6 +96,8 @@ module Mangadex
 
     sig { params(id: String, args: T::Api::Arguments).returns(T::Api::ChapterResponse) }
     def self.feed(id, **args)
+      Mangadex::Internal::Definition.must(id)
+
       Mangadex::Internal::Request.get(
         '/manga/%{id}/feed' % {id: id},
         Mangadex::Internal::Definition.chapter_list(args),
@@ -128,6 +136,8 @@ module Mangadex
 
     sig { params(id: String).returns(T::Api::GenericResponse) }
     def self.reading_status(id)
+      Mangadex::Internal::Definition.must(id)
+
       Mangadex::Internal::Request.get(
         '/manga/%{id}/status' % {id: id},
       )
@@ -135,6 +145,8 @@ module Mangadex
 
     sig { params(id: String, status: String).returns(T::Api::GenericResponse) }
     def self.update_reading_status(id, status)
+      Mangadex::Internal::Definition.must(id)
+
       Mangadex::Internal::Request.post(
         '/manga/%{id}/status' % {id: id},
         payload: Mangadex::Internal::Definition.validate({status: status}, {
@@ -149,11 +161,15 @@ module Mangadex
     # Untested API endpoints
     sig { params(id: String, args: T::Api::Arguments).returns(T::Api::MangaResponse) }
     def self.update(id, **args)
+      Mangadex::Internal::Definition.must(id)
+
       Mangadex::Internal::Request.put('/manga/%{id}' % {id: id}, payload: args)
     end
 
     sig { params(id: String).returns(Hash) }
     def self.delete(id)
+      Mangadex::Internal::Definition.must(id)
+
       Mangadex::Internal::Request.delete(
         '/manga/%{id}' % {id: id},
       )
@@ -169,6 +185,8 @@ module Mangadex
 
     class << self
       alias_method :aggregate, :volumes_and_chapters
+      alias_method :get, :view
+      alias_method :edit, :update
     end
 
     sig { returns(T.nilable(ContentRating)) }

@@ -31,6 +31,8 @@ module Mangadex
 
     sig { params(id: String, args: T::Api::Arguments).returns(Mangadex::Api::Response[Chapter]) }
     def self.get(id, **args)
+      Mangadex::Internal::Definition.must(id)
+
       Mangadex::Internal::Request.get(
         '/chapter/%{id}' % {id: id},
         Mangadex::Internal::Definition.validate(args, {
@@ -41,6 +43,8 @@ module Mangadex
 
     sig { params(id: String, args: T::Api::Arguments).returns(Mangadex::Api::Response[Chapter]) }
     def self.update(id, **args)
+      Mangadex::Internal::Definition.must(id)
+
       Mangadex::Internal::Request.put(
         '/chapter/%{id}' % {id: id},
         payload: Mangadex::Internal::Definition.validate(args, {
@@ -56,9 +60,15 @@ module Mangadex
 
     sig { params(id: String).returns(Hash) }
     def self.delete(id)
+      Mangadex::Internal::Definition.must(id)
+
       Mangadex::Internal::Request.delete(
         '/chapter/%{id}' % {id: id},
       )
+    end
+
+    class << self
+      alias_method :view, :get
     end
 
     sig { returns(String) }

@@ -120,6 +120,19 @@ module Mangadex
           )
         end
 
+        def must(*args)
+          args = args.each_with_index.map do |arg, index|
+            ["arg_at_position_#{index}".to_sym, arg]
+          end.to_h
+
+          definition = args.keys.map do |key|
+            [key, { required: true }]
+          end.to_h
+
+          validate(args, definition)
+          args.values
+        end
+
         def validate(args, definition)
           args = Hash(args).with_indifferent_access
           definition = Hash(definition).with_indifferent_access
@@ -144,7 +157,7 @@ module Mangadex
           if errors.any?
             error_message = errors.map do |error|
               if error[:extra]
-                "params[:#{error[:extra]}] does not exist and cannot be passed to this request"
+                "paalidate_required!rams[:#{error[:extra]}] does not exist and cannot be passed to this request"
               elsif error[:message]
                 error[:message]
               else
