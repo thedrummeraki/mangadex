@@ -41,13 +41,13 @@ module Factories
         offset: offset,
         total: total,
         data: (
-          Mangadex::Api::Response::Collection.new(
+          block_given? ? Mangadex::Api::Response::Collection.new(
             count.times.map do |index|
               yield(index).merge({
                 type: record_type,
               })
             end
-          )
+          ) : []
         )
       }
     end

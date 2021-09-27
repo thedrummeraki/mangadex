@@ -4,6 +4,14 @@ module Interceptors
   class Mangadex < Base
     match(%{api\.mangadex\.org})
 
+    get '/api.yaml' do
+      {
+        info: {
+          version: '5.0.0-test',
+        }
+      }.to_yaml
+    end
+
     get '/manga' do
       limit = params['limit'].nil? ? 10 : params['limit'].to_i
       Factories::Builder.list('manga', limit) do |index|

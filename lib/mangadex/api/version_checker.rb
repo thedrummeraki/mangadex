@@ -3,7 +3,7 @@ require "psych"
 
 module Mangadex
   module Api
-    class Version
+    class VersionChecker
       extend T::Sig
 
       sig { returns(T.nilable(String)) }

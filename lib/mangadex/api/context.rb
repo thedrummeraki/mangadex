@@ -20,7 +20,7 @@ module Mangadex
       def self.version
         return @@version unless @@version.nil?
 
-        @@version = Mangadex::Api::Version.check_mangadex_version
+        @@version = Mangadex::Api::VersionChecker.check_mangadex_version
       end
 
       sig { returns(T.nilable(Mangadex::Api::User)) }
@@ -50,7 +50,11 @@ module Mangadex
             data: user,
           )
         elsif user.is_a?(Hash)
-          user = user.with_indifferent_access
+          user = Mangadex::Internal::Definition.validate(user, {
+            mangadex_user_id: { accepts: String, required: true },
+            session: { accepts: String },
+            refresh: { accepts: String },
+          })
 
           @@user = Mangadex::Api::User.new(
             user[:mangadex_user_id],
@@ -111,7 +115,7 @@ module Mangadex
       end
 
       def self.with_allowed_content_ratings(*other_content_ratings, &block)
-        allow_content_ratings(*(allowed_content_ratings + other_content_ratings)) do
+        T.unsafe(self).allow_content_ratings(*(allowed_content_ratings + other_content_ratings)) do
           yield
         end
       end
@@ -126,7 +130,7 @@ module Mangadex
         class_variable_set(var_name, current_value)
         response
       ensure
-        class_variable_set(var_name, current_value)
+        class_variable_set(var_name, current_value) if current_value
       end
     end
   end

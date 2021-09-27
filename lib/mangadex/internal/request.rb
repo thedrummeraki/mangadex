@@ -80,6 +80,8 @@ module Mangadex
 
       def self.path_with_params(path, params, content_rating)
         params = content_rating ? self.with_content_rating(params) : params
+        return path if params.blank?
+
         params = params.deep_transform_keys do |key|
           key.to_s.camelize(:lower)
         end
