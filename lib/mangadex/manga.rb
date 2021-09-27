@@ -50,6 +50,7 @@ module Mangadex
           order: { accepts: Hash },
           includes: { accepts: Array, converts: to_a },
         }),
+        content_rating: true,
       )
     end
 
@@ -101,6 +102,7 @@ module Mangadex
       Mangadex::Internal::Request.get(
         '/manga/%{id}/feed' % {id: id},
         Mangadex::Internal::Definition.chapter_list(args),
+        content_rating: true,
       )
     end
 

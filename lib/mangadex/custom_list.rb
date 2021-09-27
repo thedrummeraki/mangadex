@@ -62,6 +62,7 @@ module Mangadex
       Mangadex::Internal::Request.get(
         '/list/%{id}/feed' % {id: id},
         Mangadex::Internal::Definition.chapter_list(args),
+        content_rating: true,
       )
     end
 

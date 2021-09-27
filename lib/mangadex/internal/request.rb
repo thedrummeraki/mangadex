@@ -13,9 +13,9 @@ module Mangadex
       attr_accessor :path, :headers, :payload, :method, :raw
       attr_reader :response
 
-      def self.get(path, params={}, auth: false, headers: nil, raw: false)
+      def self.get(path, params={}, auth: false, headers: nil, raw: false, content_rating: false)
         new(
-          path_with_params(path, params),
+          path_with_params(path, params, content_rating),
           method: :get,
           headers: headers,
           payload: nil,
@@ -78,13 +78,20 @@ module Mangadex
 
       private
 
-      def self.path_with_params(path, params)
-        return path if params.blank?
-
+      def self.path_with_params(path, params, content_rating)
+        params = content_rating ? self.with_content_rating(params) : params
         params = params.deep_transform_keys do |key|
           key.to_s.camelize(:lower)
         end
         "#{path}?#{params.to_query}"
+      end
+
+      def self.with_content_rating(data)
+        content_rating = data.has_key?(:content_rating) ? data[:content_rating] : []
+        Mangadex::Api::Context.allow_content_ratings(*content_rating) do
+          data[:content_rating] = Mangadex::Api::Context.allowed_content_ratings
+        end
+        data
       end
 
       def request_url

@@ -157,7 +157,7 @@ module Mangadex
           if errors.any?
             error_message = errors.map do |error|
               if error[:extra]
-                "paalidate_required!rams[:#{error[:extra]}] does not exist and cannot be passed to this request"
+                "params[:#{error[:extra]}] does not exist and cannot be passed to this request"
               elsif error[:message]
                 error[:message]
               else

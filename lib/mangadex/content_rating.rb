@@ -28,6 +28,11 @@ module Mangadex
       SCORES.keys.map { |key| ContentRating.new(key) }.select { |record| record <= content_rating }.sort
     end
 
+    sig { params(content_ratings: T::Array[T.any(T::Api::Text, T::Api::ContentRating)]).returns(T::Array[ContentRating]) }
+    def self.parse(content_ratings)
+      content_ratings.map { |content_rating| ContentRating.new(content_rating) }.uniq
+    end
+
     sig { params(value: T.any(T::Api::Text, T::Api::ContentRating)).void }
     def initialize(value)
       @value = ensure_value!(value.to_s)

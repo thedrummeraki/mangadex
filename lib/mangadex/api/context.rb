@@ -4,10 +4,17 @@ module Mangadex
     class Context
       extend T::Sig
 
+      DEFAULT_MANGADEX_CONTENT_RATING_VALUES = [
+        ContentRating::SAFE,
+        ContentRating::SUGGESTIVE,
+        ContentRating::EROTICA,
+      ].freeze
+
       @@user = nil
       @@version = nil
       @@force_raw_requests = nil
       @@tags = nil
+      @@allowed_content_ratings = DEFAULT_MANGADEX_CONTENT_RATING_VALUES
 
       sig { returns(T.nilable(String)) }
       def self.version
@@ -26,6 +33,11 @@ module Mangadex
         return @@tags if @@tags
 
         @@tags = Mangadex::Tag.list.data
+      end
+
+      sig { returns(T::Array[Mangadex::ContentRating]) }
+      def self.allowed_content_ratings
+        @@allowed_content_ratings.map { |value| ContentRating.new(value) }
       end
 
       sig { params(user: T.nilable(T.any(Hash, Mangadex::Api::User, Mangadex::User))).void }
@@ -52,13 +64,9 @@ module Mangadex
 
       sig { params(user: T.nilable(T.any(Hash, Mangadex::Api::User, Mangadex::User)), block: T.proc.returns(T.untyped)).returns(T.untyped) }
       def self.with_user(user, &block)
-        current_user = @@user
-        @@user = user
-        response = yield
-        @@user = current_user
-        response
-      ensure
-        @@user = current_user
+        temp_set_value("user", user) do
+          yield
+        end
       end
 
       sig { params(block: T.proc.returns(T.untyped)).returns(T.untyped) }
@@ -70,7 +78,7 @@ module Mangadex
 
       def self.force_raw_requests(&block)
         if block_given?
-          temp_force_raw_requests do
+          temp_set_value("force_raw_requests", true) do
             yield
           end
         else
@@ -82,16 +90,43 @@ module Mangadex
         @@force_raw_requests = value
       end
 
+      def self.allow_content_ratings(*content_ratings, &block)
+        content_ratings = if content_ratings.empty?
+          allowed_content_ratings
+        else
+          Mangadex::ContentRating.parse(content_ratings)
+        end
+        if block_given?
+          # set temporarily
+          temp_set_value("allowed_content_ratings", content_ratings) do
+            yield
+          end
+        elsif content_ratings.any?
+          # set "permanently"
+          @@allowed_content_ratings = content_ratings
+        else
+          # This is to throw an exception prompting to pass a block if there no params.
+          yield
+        end
+      end
+
+      def self.with_allowed_content_ratings(*other_content_ratings, &block)
+        allow_content_ratings(*(allowed_content_ratings + other_content_ratings)) do
+          yield
+        end
+      end
+
       private
 
-      def self.temp_force_raw_requests(&block)
-        current_force_raw_requests = @@force_raw_requests
-        @@force_raw_requests = true
+      def self.temp_set_value(name, value, &block)
+        var_name = "@@#{name}"
+        current_value = class_variable_get(var_name)
+        class_variable_set(var_name, value)
         response = yield
-        @@force_raw_requests = current_force_raw_requests
+        class_variable_set(var_name, current_value)
         response
       ensure
-        @@force_raw_requests = current_force_raw_requests
+        class_variable_set(var_name, current_value)
       end
     end
   end

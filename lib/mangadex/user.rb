@@ -11,6 +11,7 @@ module Mangadex
       Mangadex::Internal::Request.get(
         '/user/follows/manga/feed',
         Mangadex::Internal::Definition.chapter_list(args),
+        content_rating: true,
         auth: true,
       )
     end

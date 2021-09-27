@@ -26,6 +26,7 @@ module Mangadex
       Mangadex::Internal::Request.get(
         '/chapter',
         Mangadex::Internal::Definition.chapter_list(args),
+        content_rating: true,
       )
     end
 
