@@ -18,7 +18,6 @@ module T
       T.any(
         Mangadex::Api::Response[Mangadex::Manga],
         Mangadex::Api::Response[T::Array[Mangadex::Manga]],
-        Hash,
       )
     end
     ChapterResponse = T.type_alias do
