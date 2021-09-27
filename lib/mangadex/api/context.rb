@@ -7,6 +7,7 @@ module Mangadex
       @@user = nil
       @@version = nil
       @@force_raw_requests = nil
+      @@tags = nil
 
       sig { returns(T.nilable(String)) }
       def self.version
@@ -18,6 +19,13 @@ module Mangadex
       sig { returns(T.nilable(Mangadex::Api::User)) }
       def self.user
         @@user&.with_valid_session
+      end
+
+      sig { returns(T::Array[Mangadex::Tag]) }
+      def self.tags
+        return @@tags if @@tags
+
+        @@tags = Mangadex::Tag.list.data
       end
 
       sig { params(user: T.nilable(T.any(Hash, Mangadex::Api::User, Mangadex::User))).void }
