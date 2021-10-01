@@ -3,7 +3,7 @@ module Mangadex
   class Auth
     extend T::Sig
 
-    sig { params(username: String, password: String).returns(T.any(T::Boolean, Mangadex::Api::Response)) }
+    sig { params(username: String, password: String).returns(T.any(T.nilable(Mangadex::Api::User), Mangadex::Api::Response)) }
     def self.login(username, password)
       response = Mangadex::Internal::Request.post(
         '/auth/login',
@@ -25,8 +25,7 @@ module Mangadex
         refresh: refresh,
         data: mangadex_user.data,
       )
-      Mangadex::Api::Context.user = user
-      !user.session_expired?
+      !user.session_expired? ? user : nil
     end
 
     sig { returns(Hash) }
