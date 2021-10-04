@@ -3,13 +3,14 @@
 require "bundler/setup"
 require "mangadex"
 
-username, password = [
+username, password, email = [
   ENV['MD_USERNAME'],
   ENV['MD_PASSWORD'],
+  ENV['MD_EMAIL'],
 ]
 
-if username && password
-  Mangadex::Auth.login(username, password)
+if (username || email) && password
+  Mangadex::Auth.login(username: username, email: email, password: password)
 end
 
 # You can add fixtures and/or initialization code here to make experimenting

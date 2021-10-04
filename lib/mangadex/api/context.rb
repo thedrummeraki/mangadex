@@ -26,6 +26,9 @@ module Mangadex
       sig { returns(T.nilable(Mangadex::Api::User)) }
       def self.user
         @@user&.with_valid_session
+      rescue Mangadex::UnauthenticatedError => error
+        warn("A user is present but not authenticated!")
+        nil
       end
 
       sig { returns(T::Array[Mangadex::Tag]) }
@@ -40,7 +43,7 @@ module Mangadex
         @@allowed_content_ratings.map { |value| ContentRating.new(value) }
       end
 
-      sig { params(user: T.nilable(T.any(Hash, Mangadex::Api::User, Mangadex::User))).void }
+      sig { params(user: T.nilable(T.untyped)).void }
       def self.user=(user)
         if user.is_a?(Mangadex::Api::User)
           @@user = user
@@ -61,8 +64,17 @@ module Mangadex
             session: user[:session],
             refresh: user[:refresh],
           )
+        elsif user_object?(user)
+          @@user = Mangadex::Api::User.new(
+            user.mangadex_user_id.to_s,
+            session: user.session,
+            refresh: user.refresh,
+            data: user,
+          )
         elsif user.nil?
           @@user = nil
+        else
+          raise TypeError, "Invalid user type."
         end
       end
 
@@ -121,6 +133,16 @@ module Mangadex
       end
 
       private
+
+      def self.user_object?(user)
+        return false if user.nil?
+
+        missing_methods = [:session, :refresh, :mangadex_user_id] - user.methods
+        return true if missing_methods.empty?
+
+        warn("Potential user object #{user} is missing #{missing_methods}")
+        false
+      end
 
       def self.temp_set_value(name, value, &block)
         var_name = "@@#{name}"

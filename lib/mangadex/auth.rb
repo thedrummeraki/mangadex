@@ -3,16 +3,22 @@ module Mangadex
   class Auth
     extend T::Sig
 
-    sig { params(username: String, password: String).returns(T.any(T.nilable(Mangadex::Api::User), Mangadex::Api::Response)) }
-    def self.login(username, password)
+    sig { params(username: T.nilable(String), email: T.nilable(String), password: String).returns(T.nilable(Mangadex::Api::User)) }
+    def self.login(username: nil, email: nil, password: nil)
+      args = { password: password }
+      args.merge!(email: email) if email
+      args.merge!(username: username) if username
+
       response = Mangadex::Internal::Request.post(
         '/auth/login',
-        payload: {
-          username: username,
-          password: password,
-        },
+        payload: Mangadex::Internal::Definition.validate(args, {
+          username: { accepts: String },
+          email: { accepts: String },
+          password: { accepts: String, required: true },
+        }),
       )
-      return response if response.is_a?(Mangadex::Api::Response) && response.errored?
+
+      raise AuthenticationError.new(response) if response.is_a?(Mangadex::Api::Response) && response.errored?
 
       session = response.dig('token', 'session')
       refresh = response.dig('token', 'refresh')
@@ -25,7 +31,10 @@ module Mangadex
         refresh: refresh,
         data: mangadex_user.data,
       )
-      !user.session_expired? ? user : nil
+      return if user.session_expired?
+
+      user.persist
+      user
     end
 
     sig { returns(Hash) }
@@ -47,6 +56,10 @@ module Mangadex
       )
       return reponse if response.is_a?(Mangadex::Api::Response) && response.errored?
 
+      if Mangadex::Api::Context.user.respond_to(:session=)
+        Mangadex::Api::Context.user.session = nil
+      end
+      Mangadex.storage.clear(Mangadex::Api::Context.user.mangadex_user_id)
       Mangadex::Api::Context.user = nil
       true
     end

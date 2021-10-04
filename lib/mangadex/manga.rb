@@ -123,14 +123,16 @@ module Mangadex
       )
     end
 
-    sig { params(args: T::Api::Arguments).returns(T::Api::GenericResponse) }
-    def self.all_reading_status(**args)
+    sig { params(status: String).returns(T::Api::GenericResponse) }
+    def self.all_reading_status(status)
+      args = { status: status }
+
       Mangadex::Internal::Request.get(
         '/manga/status',
         Mangadex::Internal::Definition.validate(args, {
           status: {
             accepts: %w(reading on_hold dropped plan_to_read re_reading completed),
-            converts: Mangadex::Internal::Definition.converts(:to_a),
+            converts: :to_s,
           },
         })
       )

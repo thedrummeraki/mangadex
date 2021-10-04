@@ -1,4 +1,6 @@
 # typed: strict
+require_relative "api/storage/session"
+
 require_relative "api/version_checker"
 require_relative "api/context"
 require_relative "api/response"
