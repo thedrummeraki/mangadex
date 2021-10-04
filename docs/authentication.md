@@ -52,12 +52,12 @@ user.with_valid_session # Refreshes the tokens if expired, then return user itse
 user.session_expired? # Returns if user.session has expired (Boolean)
 ```
 
-If there's an error, `Mangadex::AuthenticationError` will be raised. Here's how to handle that scenario:
+If there's an error, `Mangadex::Errors::AuthenticationError` will be raised. Here's how to handle that scenario:
 
 ```ruby
 def login(email, password)
   Mangadex::Auth.login(email: email, password: password)
-rescue Mangadex::AuthenticationError => error
+rescue Mangadex::Errors::AuthenticationError => error
   response = error.response
 
   response.errors # A list of detailed errors from Mangadex. (Array of Mangadex::Api::Response::Error)
@@ -72,7 +72,7 @@ example to retrieve a list of manga that the logged in user is _reading_ at the 
 ```ruby
 user = Mangadex::Auth.login(...)
 
-reading_now = Mangadex::Api::Context.with_user(user) do
+reading_now = Mangadex.context.with_user(user) do
   response = Mangadex::Manga.all_reading_status('reading')
   manga_ids = response['statuses'].keys
 
@@ -80,7 +80,7 @@ reading_now = Mangadex::Api::Context.with_user(user) do
 end
 ```
 
-> Note: Setting `Mangadex::Api::Context.with_user(...)` will make it so that every request is authorized with that user's `session` token.
+> Note: Setting `Mangadex.context.with_user(...)` will make it so that every request is authorized with that user's `session` token.
 
 ### About content ratings
 
@@ -108,7 +108,7 @@ More on how content ratings work [here]().
 Logging the user out is very easy:
 
 ```ruby
-Mangadex::Api::Context.with_user(user) do
+Mangadex.context.with_user(user) do
   Mangadex::Auth.logout
 end
 ```

@@ -54,7 +54,7 @@ module Mangadex
         payload_details = request_payload ? "Payload: #{request_payload}" : "{no-payload}"
         puts("[#{self.class.name}] #{method.to_s.upcase} #{request_url} #{payload_details}")
 
-        raise Mangadex::UserNotLoggedIn.new if auth && Mangadex::Api::Context.user.nil?
+        raise Mangadex::Errors::UserNotLoggedIn.new if auth && Mangadex.context.user.nil?
 
         start_time = Time.now
 
@@ -63,13 +63,13 @@ module Mangadex
         elapsed_time = ((end_time - start_time) * 1000).to_i
         puts("[#{self.class.name}] took #{elapsed_time} ms")
         
-        raw_request = raw || Mangadex::Api::Context.force_raw_requests
+        raw_request = raw || Mangadex.context.force_raw_requests
 
         if (body = @response.body)
           raw_request ? try_json(body) : Mangadex::Api::Response.coerce(try_json(body))
         end
       rescue RestClient::Unauthorized => error
-        raise UnauthenticatedError.new(Mangadex::Api::Response.coerce(try_json(error.response.body)))
+        raise Errors::UnauthenticatedError.new(Mangadex::Api::Response.coerce(try_json(error.response.body)))
       rescue RestClient::Exception => error
         if (body = error.response.body)
           raw_request ? try_json(body) : Mangadex::Api::Response.coerce(JSON.parse(body)) rescue raise error
@@ -92,8 +92,8 @@ module Mangadex
 
       def self.with_content_rating(data)
         content_rating = data.has_key?(:content_rating) ? data[:content_rating] : []
-        Mangadex::Api::Context.allow_content_ratings(*content_rating) do
-          data[:content_rating] = Mangadex::Api::Context.allowed_content_ratings
+        Mangadex.context.allow_content_ratings(*content_rating) do
+          data[:content_rating] = Mangadex.context.allowed_content_ratings
         end
         data
       end
@@ -110,10 +110,10 @@ module Mangadex
       end
 
       def request_headers
-        return headers if Mangadex::Api::Context.user.nil?
+        return headers if Mangadex.context.user.nil?
 
         headers.merge({
-          Authorization: Mangadex::Api::Context.user.with_valid_session.session,
+          Authorization: Mangadex.context.user.with_valid_session.session,
         })
       end
 

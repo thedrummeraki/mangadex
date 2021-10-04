@@ -60,7 +60,7 @@ module Mangadex
     def self.follows_user(id)
       Mangadex::Internal::Definition.must(id)
 
-      return if Mangadex::Api::Context.user.nil?
+      return if Mangadex.context.user.nil?
 
       data = Mangadex::Internal::Request.get(
         '/user/follows/user/%{id}' % {id: id},
@@ -90,7 +90,7 @@ module Mangadex
     def self.follows_manga(id)
       Mangadex::Internal::Definition.must(id)
 
-      return if Mangadex::Api::Context.user.nil?
+      return if Mangadex.context.user.nil?
 
       data = Mangadex::Internal::Request.get(
         '/user/follows/manga/%{id}' % {id: id},

@@ -5,12 +5,12 @@ module Mock
     def self.with_logged_in_user(&block)
       Interceptors::Mangadex.intercept do
         user = Mangadex::Api::User.new(
-          SecureRandom.uuid,
+          mangadex_user_id: SecureRandom.uuid,
           session: SecureRandom.uuid,
           refresh: SecureRandom.uuid,
         )
 
-        Mangadex::Api::Context.with_user(user) do
+        Mangadex.context.with_user(user) do
           yield(user)
         end
       end
