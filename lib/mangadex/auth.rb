@@ -58,6 +58,24 @@ module Mangadex
       )
       return reponse if response.is_a?(Mangadex::Api::Response) && response.errored?
 
+      clear_user
+      true
+    rescue Mangadex::Errors::UnauthenticatedError
+      clear_user
+      true
+    end
+
+    sig { returns(T::Boolean) }
+    def self.refresh_token
+      !(Mangadex.context.user&.refresh!).nil?
+    end
+
+    private
+
+    sig { void }
+    def self.clear_user
+      return if Mangadex.context.user.nil?
+
       if Mangadex.context.user.respond_to?(:session=)
         Mangadex.context.user.session = nil
       end
@@ -66,12 +84,6 @@ module Mangadex
       end
       Mangadex.storage.clear(Mangadex.context.user.mangadex_user_id)
       Mangadex.context.user = nil
-      true
-    end
-
-    sig { returns(T::Boolean) }
-    def self.refresh_token
-      !(Mangadex.context.user&.refresh!).nil?
     end
   end
 end

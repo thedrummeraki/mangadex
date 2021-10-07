@@ -7,7 +7,7 @@ module Mangadex
       attr_accessor :mangadex_user_id, :session, :refresh, :session_valid_until
       attr_reader :data
 
-      sig { params(mangadex_user_id: String, session: T.nilable(String), refresh: T.nilable(String), data: T.untyped, session_valid_until: Time).void }
+      sig { params(mangadex_user_id: String, session: T.nilable(String), refresh: T.nilable(String), data: T.untyped, session_valid_until: T.nilable(Time)).void }
       def initialize(mangadex_user_id:, session: nil, refresh: nil, data: nil, session_valid_until: nil)
         raise ArgumentError, 'Missing mangadex_user_id' if mangadex_user_id.to_s.empty?
 
@@ -36,7 +36,7 @@ module Mangadex
         true
       end
 
-      sig { returns(Mangadex::Api::User) }
+      sig { returns(User) }
       def with_valid_session
         session_expired? && refresh!
         self
@@ -67,23 +67,32 @@ module Mangadex
         !mangadex_user_id.nil? && !mangadex_user_id.strip.empty?
       end
 
+      sig { params(mangadex_user_id: T.nilable(String)).returns(T.nilable(User)) }
       def self.from_storage(mangadex_user_id)
+        return if mangadex_user_id.nil?
+
         session = Mangadex.storage.get(mangadex_user_id, 'session')
         refresh = Mangadex.storage.get(mangadex_user_id, 'refresh')
         session_valid_until = Mangadex.storage.get(mangadex_user_id, 'session_valid_until')
 
-        if session || refresh || session_valid_until
-          session_valid_until = Time.parse(session_valid_until) if session_valid_until
+        user = if session || refresh || session_valid_until
+          session_valid_until = session_valid_until ? Time.parse(session_valid_until) : nil
 
           new(
-            mangadex_user_id,
+            mangadex_user_id: mangadex_user_id,
             session: session,
             refresh: refresh,
             session_valid_until: session_valid_until,
-          )
+          ).with_valid_session
         else
           nil
         end
+
+        if user
+          Mangadex.context.user = user
+        end
+
+        user
       end
     end
   end

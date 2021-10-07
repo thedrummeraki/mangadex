@@ -1,4 +1,4 @@
-# typed: strict
+# typed: true
 require 'sorbet-runtime'
 
 require 'active_support'

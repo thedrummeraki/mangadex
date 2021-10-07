@@ -1,3 +1,5 @@
+# typed: true
+
 module Mangadex
   module Errors
     # Standard error class for this gem.

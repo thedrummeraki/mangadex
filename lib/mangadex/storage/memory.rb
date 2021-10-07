@@ -1,6 +1,6 @@
 module Mangadex
   module Storage
-    class Memory
+    class Memory < BasicObject
       def initialize
         @storage = {}
       end

@@ -1,3 +1,5 @@
+# typed: true
+
 module Mangadex
   class Config
     extend T::Sig
