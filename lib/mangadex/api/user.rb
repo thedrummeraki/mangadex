@@ -24,9 +24,7 @@ module Mangadex
       def refresh!
         return false if refresh.nil?
 
-        response = Mangadex.context.without_user do
-          Mangadex::Internal::Request.post('/auth/refresh', payload: { token: refresh })
-        end
+        response = Mangadex::Internal::Request.post('/auth/refresh', payload: { token: refresh })
         return false unless response['token']
 
         @session_valid_until = Time.now + (14 * 60)

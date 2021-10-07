@@ -5,7 +5,7 @@ module Mangadex
       extend T::Sig
 
       sig { returns(T::Array[Mangadex::ContentRating]) }
-      attr_accessor :allowed_content_ratings
+      attr_accessor :allowed_content_ratings, :ignore_user
 
       def initialize
         @allowed_content_ratings = Mangadex.configuration.default_content_ratings
@@ -18,7 +18,7 @@ module Mangadex
 
       sig { returns(T.nilable(Mangadex::Api::User)) }
       def user
-        @user&.with_valid_session
+        @ignore_user ? nil : @user&.with_valid_session
       rescue Mangadex::Errors::UnauthenticatedError
         warn("A user is present but not authenticated!")
         nil
@@ -38,7 +38,7 @@ module Mangadex
 
       sig { params(block: T.proc.returns(T.untyped)).returns(T.untyped) }
       def without_user(&block)
-        with_user(nil) do
+        temp_set_value("ignore_user", true) do
           yield
         end
       end
