@@ -78,7 +78,7 @@ def login(email, password)
 rescue Mangadex::Errors::AuthenticationError => error
   response = error.response
 
-  # A list of detailed errors from Mangadex. (Array of 
+  # A list of detailed errors from Mangadex. (Array of
   # Mangadex::Api::Response::Error)
   response.errors.each do |error|
     puts error.id
@@ -128,6 +128,7 @@ This action also clears the context's user and the storage info associated to th
 ### What is this?
 
 Using this gem should help you a little bit managing tokens. By default, the gem stores the following information in memory:
+
 - For a particular user ID:
   - User session
   - User refresh token
@@ -136,6 +137,7 @@ Using this gem should help you a little bit managing tokens. By default, the gem
 ### Why is this a thing?
 
 Good question. We want to make session management with this gem as easy as possible. The session is used to retrieve a valid logged in user. Here's how it works:
+
 - When the user logs in, the refresh token, the session token (as well as it's expired date) are stored for that user
 - When requesting the tokens for the user, a `Mangadex::Api::User` is created with refreshed tokens (if expired).
 - When logging out, if implemented by you, the users's session details are deleted.
@@ -191,7 +193,7 @@ The snippet of code is an example of how a storage strategy is implemented. It's
 
 > - We recommend using redis if you're developing a web app or a bot where authentication is involed.
 > - You can even use a the filesystem if you're building a CLI (command line interface).
-> - We **do not** recommend using SQL at the moment. This might be a bit expensive...
+> - We **do not** recommend using SQL at the moment. This might be hard on your app's performance...
 
 ### Can I opt-out?
 
