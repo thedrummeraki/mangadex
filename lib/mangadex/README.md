@@ -3,12 +3,14 @@
 This is documentation for the `Mangadex` module.
 
 ### Directory
+
 #### Sub-modules
 
 - [`Mangadex::Api`](#)
 - [`Mangadex::Internal`](#)
 
 #### Fetchable/Resources
+
 - [`Mangadex::Artist`](#)
 - [`Mangadex::Auth`](#mangadexauth)
 - [`Mangadex::Author`](#)
@@ -25,6 +27,7 @@ This is documentation for the `Mangadex` module.
 - [`Mangadex::User`](#)
 
 #### Other classes
+
 - [`Mangadex::MangadexObject`](#)
 - [`Mangadex::Types`](#)
 - [`Mangadex::Version`](#)
@@ -51,7 +54,7 @@ Mangadex::Auth.login(username, password)
 ```
 
 Login with your username and password. Upon successful login, the user will be available in a context from
-`Mangadex::Api::Context.user`. This variable can be used anywhere in your application. More info [here](#).
+`Mangadex.context.user`. This variable can be used anywhere in your application. More info [here](#).
 
 > - Returns `Mangadex::Api::Response` if request fails.
 > - Returns `true` if user is logged in.
@@ -86,6 +89,7 @@ Mangadex::Auth.refresh_token
 ```
 
 Manually cause a token refresh.
+
 > Please note that simply calling `Mangadex::Api::Content.user` ensures that the token is valid. More info [here](#).
 
 > - Returns `nil` if user is not logged (ie: `Mangadex::Api::Content.user` is `nil`)

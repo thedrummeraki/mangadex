@@ -1,14 +1,14 @@
 # typed: ignore
 
-RSpec.describe Mangadex::Api::Context do
+RSpec.describe Mangadex::Internal::Context do
   it 'sets the user from Mangadex::Api::User' do
     api_user = Mangadex::Api::User.new(
-      'dummy-id'
+      mangadex_user_id: 'dummy-id'
     )
     expect do
-      Mangadex::Api::Context.user = api_user
+      Mangadex.context.user = api_user
     end.not_to raise_error
-    expect(Mangadex::Api::Context.user).to eq(api_user)
+    expect(Mangadex.context.user).to eq(api_user)
   end
 
   it 'sets the user from Mangadex::User' do
@@ -19,28 +19,28 @@ RSpec.describe Mangadex::Api::Context do
       }
     })
     expect do
-      Mangadex::Api::Context.user = mangadex_user
+      Mangadex.context.user = mangadex_user
     end.not_to raise_error
-    expect(Mangadex::Api::Context.user.mangadex_user_id).to eq('dummy-id')
-    expect(Mangadex::Api::Context.user.data).to eq(mangadex_user)
+    expect(Mangadex.context.user.mangadex_user_id).to eq('dummy-id')
+    expect(Mangadex.context.user.data).to eq(mangadex_user)
   end
 
   it 'sets the user from Hash' do
     expect do
-      Mangadex::Api::Context.user = {
+      Mangadex.context.user = {
         mangadex_user_id: 'dummy-id',
         session: 'session',
         refresh: 'refresh',
       }
     end.not_to raise_error
-    expect(Mangadex::Api::Context.user.mangadex_user_id).to eq('dummy-id')
-    expect(Mangadex::Api::Context.user.session).to eq('session')
-    expect(Mangadex::Api::Context.user.refresh).to eq('refresh')
+    expect(Mangadex.context.user.mangadex_user_id).to eq('dummy-id')
+    expect(Mangadex.context.user.session).to eq('session')
+    expect(Mangadex.context.user.refresh).to eq('refresh')
   end
 
   it 'fails to set a user from invalid Hash' do
     expect do
-      Mangadex::Api::Context.user = {
+      Mangadex.context.user = {
         blah: 'blah',
       }
     end.to raise_error(ArgumentError)
@@ -48,39 +48,39 @@ RSpec.describe Mangadex::Api::Context do
 
   it 'fails to set a user from the wrong type' do
     expect do
-      Mangadex::Api::Context.user = 1
+      Mangadex.context.user = 1
     end.to raise_error(TypeError)
   end
 
   it 'sets a temp user' do
     user_1 = Mangadex::Api::User.new(
-      'one'
+      mangadex_user_id: 'one'
     )
     user_2 = Mangadex::Api::User.new(
-      'two'
+      mangadex_user_id: 'two'
     )
-    Mangadex::Api::Context.user = user_1
-    expect(Mangadex::Api::Context.user.mangadex_user_id).to eq('one')
+    Mangadex.context.user = user_1
+    expect(Mangadex.context.user.mangadex_user_id).to eq('one')
 
-    Mangadex::Api::Context.with_user(user_2) do
-      expect(Mangadex::Api::Context.user.mangadex_user_id).to eq('two')
+    Mangadex.context.with_user(user_2) do
+      expect(Mangadex.context.user.mangadex_user_id).to eq('two')
     end
 
-    expect(Mangadex::Api::Context.user.mangadex_user_id).to eq('one')
+    expect(Mangadex.context.user.mangadex_user_id).to eq('one')
   end
 
   it 'sets temp allowed content ratings' do
-    original_content_ratings = Mangadex::Api::Context.allow_content_ratings('safe', 'suggestive', 'erotica')
+    original_content_ratings = Mangadex.context.allow_content_ratings('safe', 'suggestive', 'erotica')
 
-    Mangadex::Api::Context.allow_content_ratings('safe') do
-      expect(Mangadex::Api::Context.allowed_content_ratings).to eq(['safe'])
+    Mangadex.context.allow_content_ratings('safe') do
+      expect(Mangadex.context.allowed_content_ratings).to eq(['safe'])
     end
 
-    expect(Mangadex::Api::Context.allowed_content_ratings).to eq(original_content_ratings)
+    expect(Mangadex.context.allowed_content_ratings).to eq(original_content_ratings)
   end
 
   it 'uses content ratings when calling API' do
-    Mangadex::Api::Context.allow_content_ratings('pornographic', 'safe')
+    Mangadex.context.allow_content_ratings('pornographic', 'safe')
     interceptor = Interceptors::Mangadex.customize do
       get '/manga' do
         Factories::Builder.list('manga').merge({params: params})

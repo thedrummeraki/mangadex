@@ -3,16 +3,20 @@ module Mangadex
   class Auth
     extend T::Sig
 
-    sig { params(username: String, password: String).returns(T.any(T.nilable(Mangadex::Api::User), Mangadex::Api::Response)) }
-    def self.login(username, password)
+    sig { params(username: T.nilable(String), email: T.nilable(String), password: String).returns(T.nilable(Mangadex::Api::User)) }
+    def self.login(username: nil, email: nil, password: nil)
+      args = { password: password }
+      args.merge!(email: email) if email
+      args.merge!(username: username) if username
+
       response = Mangadex::Internal::Request.post(
         '/auth/login',
-        payload: {
-          username: username,
-          password: password,
-        },
+        payload: Mangadex::Internal::Definition.validate(args, {
+          username: { accepts: String },
+          email: { accepts: String },
+          password: { accepts: String, required: true },
+        }),
       )
-      return response if response.is_a?(Mangadex::Api::Response) && response.errored?
 
       session = response.dig('token', 'session')
       refresh = response.dig('token', 'refresh')
@@ -20,12 +24,19 @@ module Mangadex
       mangadex_user = Mangadex::Internal::Request.get('/user/me', headers: { Authorization: session })
 
       user = Mangadex::Api::User.new(
-        mangadex_user.data.id,
+        mangadex_user_id: mangadex_user.data.id,
         session: session,
         refresh: refresh,
         data: mangadex_user.data,
       )
-      !user.session_expired? ? user : nil
+      return if user.session_expired?
+
+      Mangadex.context.user = user
+
+      user.persist
+      user
+    rescue Errors::UnauthorizedError => error
+      raise Errors::AuthenticationError.new(error.response)
     end
 
     sig { returns(Hash) }
@@ -40,20 +51,39 @@ module Mangadex
 
     sig { returns(T.any(T::Boolean, Mangadex::Api::Response)) }
     def self.logout
-      return true if Mangadex::Api::Context.user.nil?
+      return true if Mangadex.context.user.nil?
 
       response = Mangadex::Internal::Request.post(
         '/auth/logout',
       )
       return reponse if response.is_a?(Mangadex::Api::Response) && response.errored?
 
-      Mangadex::Api::Context.user = nil
+      clear_user
+      true
+    rescue Mangadex::Errors::UnauthorizedError
+      clear_user
       true
     end
 
     sig { returns(T::Boolean) }
     def self.refresh_token
-      !(Mangadex::Api::Context.user&.refresh!).nil?
+      !(Mangadex.context.user&.refresh!).nil?
+    end
+
+    private
+
+    sig { void }
+    def self.clear_user
+      return if Mangadex.context.user.nil?
+
+      if Mangadex.context.user.respond_to?(:session=)
+        Mangadex.context.user.session = nil
+      end
+      if Mangadex.context.user.respond_to?(:refresh=)
+        Mangadex.context.user.refresh = nil
+      end
+      Mangadex.storage.clear(Mangadex.context.user.mangadex_user_id)
+      Mangadex.context.user = nil
     end
   end
 end

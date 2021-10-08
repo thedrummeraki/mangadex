@@ -41,8 +41,11 @@ module Mangadex
         end
       end
 
-      def errored?
-        Array(errors).any?
+      def errored?(status=nil)
+        errored = Array(errors).any?
+        return errored if status.nil?
+
+        errors.select { |error| error.status.to_s == status.to_s }.any?
       end
 
       def as_json(*)
