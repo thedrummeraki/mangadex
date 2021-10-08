@@ -19,7 +19,7 @@ Mangadex.context.user.nil? # => false
 custom_lists = Mangadex::CustomList.list
 ```
 
-If you're not logged in, `Mangadex::Errors::UnauthenticatedError` will be raised for any request that requires you to be logged in.
+If you're not logged in, `Mangadex::Errors::UnauthorizedError` will be raised for any request that requires you to be logged in and authorized to perform a certain account.
 
 You can set the user in a temporary context:
 
@@ -87,7 +87,7 @@ Mangadex.context.version
 
 A warning message will be printed if there's a mismatch between Mangadex's API version and the gem version. Example:
 
-| Mangadex's API version | The gem's version | Result |
-| --- | --- | --- |
-| 5.3.3 | 5.3.3.1 | OK |
-| 5.3.4 | 5.3.3.4 | Warning |
+| Mangadex's API version | The gem's version | Result  |
+| ---------------------- | ----------------- | ------- |
+| 5.3.3                  | 5.3.3.1           | OK      |
+| 5.3.4                  | 5.3.3.4           | Warning |

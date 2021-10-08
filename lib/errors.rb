@@ -32,10 +32,10 @@ module Mangadex
       end
     end
 
-    class UnauthenticatedError < AuthenticationError
+    class UnauthorizedError < AuthenticationError
       sig { returns(String) }
       def message
-        "Oops, are you logged in? Make sure you log in with Mangadex::Auth.login"
+        "Oops, you are not authorized to make this call. Make sure you log in with the right account."
       end
     end
   end

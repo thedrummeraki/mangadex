@@ -19,7 +19,7 @@ module Mangadex
       sig { returns(T.nilable(Mangadex::Api::User)) }
       def user
         @ignore_user ? nil : @user&.with_valid_session
-      rescue Mangadex::Errors::UnauthenticatedError
+      rescue Mangadex::Errors::UnauthorizedError
         warn("A user is present but not authenticated!")
         nil
       end

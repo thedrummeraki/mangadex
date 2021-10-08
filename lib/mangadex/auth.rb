@@ -35,7 +35,7 @@ module Mangadex
 
       user.persist
       user
-    rescue Errors::UnauthenticatedError => error
+    rescue Errors::UnauthorizedError => error
       raise Errors::AuthenticationError.new(error.response)
     end
 
@@ -60,7 +60,7 @@ module Mangadex
 
       clear_user
       true
-    rescue Mangadex::Errors::UnauthenticatedError
+    rescue Mangadex::Errors::UnauthorizedError
       clear_user
       true
     end

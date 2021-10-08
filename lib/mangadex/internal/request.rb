@@ -69,7 +69,7 @@ module Mangadex
           raw_request ? try_json(body) : Mangadex::Api::Response.coerce(try_json(body))
         end
       rescue RestClient::Unauthorized => error
-        raise Errors::UnauthenticatedError.new(Mangadex::Api::Response.coerce(try_json(error.response.body)))
+        raise Errors::UnauthorizedError.new(Mangadex::Api::Response.coerce(try_json(error.response.body)))
       rescue RestClient::Exception => error
         if (body = error.response.body)
           raw_request ? try_json(body) : Mangadex::Api::Response.coerce(JSON.parse(body)) rescue raise error
