@@ -48,6 +48,28 @@ module Mangadex
         errors.select { |error| error.status.to_s == status.to_s }.any?
       end
 
+      def more_results?
+        return unless data.is_a?(Array)
+
+        total > data.count
+      end
+
+      def count
+        data.is_a?(Array) ? data.count : nil
+      end
+
+      def each(&block)
+        if data.is_a?(Array)
+          data.each(&block)
+        else
+          raise ArgumentError, "Expect data to be Array, but got #{data.class}"
+        end
+      end
+
+      def to_a
+        each.to_a
+      end
+
       def as_json(*)
         Hash(raw_data)
       end
