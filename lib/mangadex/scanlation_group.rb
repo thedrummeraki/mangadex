@@ -10,10 +10,13 @@ module Mangadex
       :discord,
       :contact_email,
       :description,
+      :twitter,
       :locked,
       :official,
       :verified,
       :focused_language,
+      :publish_delay,
+      :inactive,
       :version,
       :created_at,
       :updated_at

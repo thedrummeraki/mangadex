@@ -106,6 +106,11 @@ module Mangadex
             {
               limit: { accepts: Integer },
               offset: { accepts: Integer },
+              ids: { accepts: [String] },
+              title: { accepts: String },
+              groups: { accepts: [String] },
+              uploader: { accepts: [String], converts: converts(:to_a) },
+              chapter: { accepts: [String], converts: converts(:to_a) },
               translated_language: { accepts: String },
               original_language: { accepts: [String] },
               excluded_original_language: { accepts: [String] },

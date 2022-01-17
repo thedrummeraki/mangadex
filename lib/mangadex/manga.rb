@@ -17,6 +17,7 @@ module Mangadex
       :year,
       :content_rating,
       :tags,
+      :state,
       :version,
       :created_at,
       :updated_at
@@ -49,6 +50,8 @@ module Mangadex
           updated_at_since: { accepts: %r{^\d{4}-[0-1]\d-([0-2]\d|3[0-1])T([0-1]\d|2[0-3]):[0-5]\d:[0-5]\d$} },
           order: { accepts: Hash },
           includes: { accepts: Array, converts: to_a },
+          has_available_chapters: { accepts: ['0', '1', 'true', 'false'] },
+          group: { accepts: String },
         }),
         content_rating: true,
       )
