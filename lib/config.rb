@@ -13,6 +13,9 @@ module Mangadex
     sig { returns(Class) }
     attr_accessor :storage_class
 
+    sig { returns(T.nilable(T.any(String, Symbol))) }
+    attr_accessor :storage_scope
+
     sig { returns(T::Array[ContentRating]) }
     attr_accessor :default_content_ratings
 
@@ -43,8 +46,13 @@ module Mangadex
       @storage_class = klass
     end
 
+    def storage_scope=(scope)
+      @storage = nil
+      @storage_scope = scope
+    end
+
     def storage
-      @storage ||= storage_class.new
+      @storage ||= storage_class.new(@storage_scope)
     end
   end
 end

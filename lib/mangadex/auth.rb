@@ -49,7 +49,7 @@ module Mangadex
       )
     end
 
-    sig { returns(T.any(T::Boolean, Mangadex::Api::Response)) }
+    sig { returns(T.any(Mangadex::Api::User, Mangadex::Api::Response)) }
     def self.logout
       return true if Mangadex.context.user.nil?
 
@@ -59,10 +59,8 @@ module Mangadex
       return reponse if response.is_a?(Mangadex::Api::Response) && response.errored?
 
       clear_user
-      true
     rescue Mangadex::Errors::UnauthorizedError
       clear_user
-      true
     end
 
     sig { returns(T::Boolean) }
@@ -72,18 +70,21 @@ module Mangadex
 
     private
 
-    sig { void }
+    sig { returns(Mangadex::Api::User) }
     def self.clear_user
       return if Mangadex.context.user.nil?
+      user = Mangadex.context.user
 
-      if Mangadex.context.user.respond_to?(:session=)
-        Mangadex.context.user.session = nil
+      if user.respond_to?(:session=)
+        user.session = nil
       end
-      if Mangadex.context.user.respond_to?(:refresh=)
-        Mangadex.context.user.refresh = nil
+      if user.respond_to?(:refresh=)
+        user.refresh = nil
       end
-      Mangadex.storage.clear(Mangadex.context.user.mangadex_user_id)
+      Mangadex.storage.clear(user.mangadex_user_id)
       Mangadex.context.user = nil
+
+      user
     end
   end
 end
