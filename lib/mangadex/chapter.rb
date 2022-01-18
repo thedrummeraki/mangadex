@@ -10,9 +10,7 @@ module Mangadex
       :volume,
       :chapter,
       :translated_language,
-      :hash,
-      :data,
-      :data_saver,
+      :pages,
       :last_chapter,
       :uploader,
       :external_url,
@@ -90,11 +88,6 @@ module Mangadex
       locale&.english_name
     end
 
-    sig { returns(Integer) }
-    def page_count
-      Array(data).count
-    end
-
     sig { returns(T.nilable(String)) }
     def preview_image_url
       return if data_saver.empty?
@@ -110,7 +103,7 @@ module Mangadex
     end
 
     def self.attributes_to_inspect
-      [:id, :type, :title, :volume, :chapter, :page_count, :publish_at]
+      [:id, :type, :title, :volume, :chapter, :pages, :publish_at]
     end
   end
 end
