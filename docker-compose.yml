@@ -1,0 +1,9 @@
+version: "3"
+services:
+  gem:
+    build: .
+    command: bash
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/app
