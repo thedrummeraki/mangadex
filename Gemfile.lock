@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    mangadex (5.3.3.4)
+    mangadex (5.4.9)
       activesupport (~> 6.1)
       psych (~> 4.0.1)
       rest-client (~> 2.1)

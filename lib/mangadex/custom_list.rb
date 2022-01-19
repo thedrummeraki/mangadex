@@ -135,7 +135,8 @@ module Mangadex
 
     sig { params(args: T::Api::Arguments).returns(T.nilable(Mangadex::Api::Response[Manga])) }
     def manga_details(**args)
-      ids = mangas.map(&:id)
+      custom_list = Mangadex::CustomList.get(id).data
+      ids = custom_list.mangas.map(&:id)
       ids.any? ? Mangadex::Manga.list(**args.merge(ids: ids)) : nil
     end
 

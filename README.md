@@ -23,7 +23,91 @@ Or install it yourself as:
 ## Usage
 
 Please note that I tried my best to follow Mangadex's naming conventions for [their documentation](https://api.mangadex.org). Track the progress [here in an issue](https://github.com/thedrummeraki/mangadex/issues/5).
-To find out how to use the gem, you're welcome to [check this out](lib/mangadex).
+Although a work a in progress, feel free to [check this out](lib/mangadex).
+
+### Basic Usage
+
+Here's a couple of cool things you can do with the gem:
+
+#### Get a list of manga
+
+```ruby
+response = Mangadex::Manga.list
+manga = response.data # Array of #<Mangadex::Manga>
+```
+
+#### Get a manga by id, with cover_art
+
+```ruby
+manga_id = 'd86cf65b-5f6c-437d-a0af-19a31f94ec55'
+response = Mangadex::Manga.get(manga_id, includes: :cover_art)
+entity = response.data # Object of #<Mangadex::Manga>
+
+# Original size
+entity.cover_art.image_url(size: :original)
+entity.cover_art.image_url(size: :medium)
+entity.cover_art.image_url(size: :small) # default size
+```
+
+#### Get a manga's chapter list, ordered by volume and chapter number
+
+```ruby
+manga_id = 'd86cf65b-5f6c-437d-a0af-19a31f94ec55'
+manga_response = Mangadex::Manga.get(manga_id, includes: :cover_art)
+entity = manga_response.data
+
+chapter_response = Mangadex::Chapter.list(
+  manga: entity.id,
+  order: { volume: 'asc', chapter: 'asc' },
+  translated_language: 'en',
+)
+chapters = chapter_response.data # Array of #<Mangadex::Chapter>
+```
+
+#### Get a chapter's pages
+
+```ruby
+chapter_id = 'e7bb1892-7f83-4a89-bccc-0d6d403a85fc'
+chapter = Mangadex::Chapter.get(chapter_id).data
+pages = chapter.page_urls # Data saver true by default
+```
+
+#### Search for manga by title
+
+```ruby
+response = Mangadex::Manga.list(title: 'Ijiranaide nagatoro')
+found_manga = response.data
+```
+
+#### Authenticate
+
+```ruby
+user = Mangadex::Auth.login(username: 'username', password: 'password')
+```
+
+You can access the authenticated user by using context:
+
+```ruby
+user = Mangadex.context.user
+```
+
+#### Create an public MDList, add then remove a manga
+
+```ruby
+Mangadex::Auth.login(...)
+response = Mangadex::CustomList.create(name: 'My awesome list!', visibility: 'public')
+custom_list = response.data
+
+manga_id = 'd86cf65b-5f6c-437d-a0af-19a31f94ec55'
+# Add the manga
+custom_list.add_manga(manga_id)
+
+# Remove the manga
+custom_list.remove_manga(manga_id)
+
+# Get manga list
+manga = custom_list.manga_details.data # Array of #<Mangadex::Manga>
+```
 
 ## Development
 

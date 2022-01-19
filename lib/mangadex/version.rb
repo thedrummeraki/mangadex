@@ -2,9 +2,9 @@
 module Mangadex
   module Version
     MAJOR = "5"
-    MINOR = "3"
-    TINY = "3"
-    PATCH = "4"
+    MINOR = "4"
+    TINY = "9"
+    PATCH = nil
 
     STRING = [MAJOR, MINOR, TINY].compact.join('.')
     FULL = [MAJOR, MINOR, TINY, PATCH].compact.join('.')

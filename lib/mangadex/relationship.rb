@@ -22,19 +22,24 @@ module Mangadex
     ).freeze
 
     class << self
-      def from_data(data)
+      # data: Relationship data
+      # source_obj: The object to witch the object belongs to
+      def from_data(data, source_obj = nil)
         data = data.with_indifferent_access
         klass = class_for_relationship_type(data['type'])
 
         if klass && data['attributes']&.any?
-          return klass.from_data(data, related_type: data['related'])
+          return klass.from_data(data, related_type: data['related'], source_obj: source_obj)
         end
+
+        relationships = [source_obj] if source_obj
 
         new(
           id: data['id'],
           type: data['type'],
           attributes: OpenStruct.new(data['attributes']),
           related: data['related'],
+          relationships: relationships,
         )
       end
 

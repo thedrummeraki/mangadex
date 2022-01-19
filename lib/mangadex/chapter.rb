@@ -88,11 +88,9 @@ module Mangadex
       locale&.english_name
     end
 
-    sig { returns(T.nilable(String)) }
-    def preview_image_url
-      return if data_saver.empty?
-
-      "https://uploads.mangadex.org/data-saver/#{attributes.hash}/#{data_saver.first}"
+    sig { params(data_saver: T::Boolean).returns(T.nilable(T::Array[String])) }
+    def page_urls(data_saver: true)
+      Mangadex::AtHome.page_urls(id, data_saver: data_saver)
     end
 
     def as_json(*)

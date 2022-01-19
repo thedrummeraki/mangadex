@@ -31,7 +31,7 @@ module Mangadex
           self.name.split('::').last.underscore
         end
 
-        def from_data(data, related_type: nil)
+        def from_data(data, related_type: nil, source_obj: nil)
           base_class_name = self.name.gsub('::', '_')
           klass_name = self.name
           target_attributes_class_name = "#{base_class_name}_Attributes"
@@ -57,7 +57,7 @@ module Mangadex
           data = data.with_indifferent_access
 
           relationships = data['relationships']&.map do |relationship_data|
-            Relationship.from_data(relationship_data)
+            Relationship.from_data(relationship_data, MangadexObject.new(**data))
           end
 
           attributes = klass.new(**Hash(data['attributes']))
@@ -69,7 +69,10 @@ module Mangadex
             related_type: related_type,
           }
 
+          relationships = [source_obj].compact unless relationships.present?
           initialize_hash.merge!({relationships: relationships}) if relationships.present?
+
+          # binding.pry
 
           new(**initialize_hash)
         end

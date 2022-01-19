@@ -22,3 +22,6 @@ require_relative "report_reason"
 
 # Relationship
 require_relative "relationship"
+
+# At home
+require_relative "at_home"

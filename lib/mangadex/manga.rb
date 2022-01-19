@@ -70,12 +70,13 @@ module Mangadex
 
     sig { params(id: String, args: T::Api::Arguments).returns(T::Api::MangaResponse) }
     def self.view(id, **args)
+      to_a = Mangadex::Internal::Definition.converts(:to_a)
       Mangadex::Internal::Definition.must(id)
 
       Mangadex::Internal::Request.get(
         '/manga/%{id}' % {id: id},
         Mangadex::Internal::Definition.validate(args, {
-          includes: { accepts: Array },
+          includes: { accepts: Array, converts: to_a },
         })
       )
     end
@@ -201,6 +202,12 @@ module Mangadex
       return unless attributes&.content_rating.present?
 
       ContentRating.new(attributes.content_rating)
+    end
+
+    sig { params(args: T::Api::Arguments).returns(Mangadex::Api::Response[Chapter]) }
+    def chapters(**args)
+      chapter_args = args.merge({manga: id})
+      Chapter.list(**chapter_args)
     end
   end
 end
