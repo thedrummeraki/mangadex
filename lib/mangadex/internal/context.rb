@@ -64,7 +64,7 @@ module Mangadex
             session: user[:session],
             refresh: user[:refresh],
           )
-        elsif user_object?(user)
+        elsif Mangadex::Context.user_object?(user)
           @user = Mangadex::Api::User.new(
             mangadex_user_id: user.mangadex_user_id.to_s,
             session: user.session,
@@ -113,9 +113,7 @@ module Mangadex
         end
       end
 
-      private
-
-      def user_object?(user)
+      def self.user_object?(user)
         return false if user.nil?
 
         missing_methods = [:session, :refresh, :mangadex_user_id] - user.methods
@@ -124,6 +122,8 @@ module Mangadex
         warn("Potential user object #{user} is missing #{missing_methods}")
         false
       end
+
+      private
 
       def temp_set_value(name, value, &block)
         setter_method_name = "#{name}="

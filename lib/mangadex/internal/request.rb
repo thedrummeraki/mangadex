@@ -51,7 +51,7 @@ module Mangadex
       end
 
       def run!(raw: false, auth: false)
-        payload_details = request_payload ? "Payload: #{request_payload}" : "{no-payload}"
+        payload_details = request_payload ? "Payload: #{sensitive_request_payload}" : "{no-payload}"
         puts("[#{self.class.name}] #{method.to_s.upcase} #{request_url} #{payload_details}")
 
         raise Mangadex::Errors::UserNotLoggedIn.new if auth && Mangadex.context.user.nil?
@@ -106,6 +106,14 @@ module Mangadex
       def request_payload
         return if payload.nil? || payload.empty?
 
+        JSON.generate(payload)
+      end
+      
+      def sensitive_request_payload(sensitive_fields: %w(password token))
+        payload = JSON.parse(request_payload)
+        sensitive_fields.map(&:to_s).each do |field|
+          payload[field] = '[REDACTED]' if payload.key?(field)
+        end
         JSON.generate(payload)
       end
 

@@ -4,7 +4,7 @@ module Mangadex
   class AtHome
     extend T::Sig
 
-    sig { params(chapter_id: String).returns(T.any(Mangadex::Api::Response, Hash)) }
+    sig { params(chapter_id: String).returns(T::Api::GenericResponse) }
     def self.server(chapter_id)
       Mangadex::Internal::Request.get(
         "/at-home/server/#{chapter_id}",

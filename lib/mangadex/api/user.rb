@@ -31,6 +31,8 @@ module Mangadex
         @refresh = response.dig('token', 'refresh')
         @session = response.dig('token', 'session')
 
+        update_data
+
         true
       end
 
@@ -91,6 +93,14 @@ module Mangadex
         end
 
         user
+      end
+
+      private
+
+      def update_data
+        return unless Mangadex::Internal::Context.user_object?(@data)
+
+        
       end
     end
   end
