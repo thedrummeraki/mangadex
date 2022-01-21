@@ -16,11 +16,24 @@ module Mangadex
     sig { returns(T::Array[ContentRating]) }
     attr_accessor :default_content_ratings
 
+    sig { returns(T::Api::ConfigCallback) }
+    attr_accessor :before_login
+
+    sig { returns(T::Api::ConfigCallback) }
+    attr_accessor :after_login
+
+    sig { returns(T::Api::ConfigCallback) }
+    attr_accessor :after_refresh
+
     sig { void }
     def initialize
       @user_class = Api::User
       @storage_class = Storage::Memory
       @default_content_ratings = ContentRating.parse(['safe', 'suggestive', 'erotica'])
+
+      # Authentication callbacks
+      @before_login = []
+      @after_login = []
     end
 
     sig { params(klass: Class).void }
@@ -31,6 +44,21 @@ module Mangadex
       else
         raise ArgumentError, 'user_class must respond to :session, :refresh, :mangadex_user_id'
       end
+    end
+
+    sig { params(before_login: T::Api::ConfigCallback).void }
+    def before_login=(before_login)
+      @before_login = Array(before_login).uniq
+    end
+
+    sig { params(after_login: T::Api::ConfigCallback).void }
+    def after_login=(after_login)
+      @after_login = Array(after_login).uniq
+    end
+
+    sig { params(after_refresh: T::Api::ConfigCallback).void }
+    def after_refresh=(after_refresh)
+      @after_refresh = Array(after_refresh).uniq
     end
 
     sig { params(content_ratings: T::Array[T.any(String, ContentRating)]).void }

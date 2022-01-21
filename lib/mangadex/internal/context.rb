@@ -116,7 +116,7 @@ module Mangadex
       def self.user_object?(user)
         return false if user.nil?
 
-        missing_methods = [:session, :refresh, :mangadex_user_id] - user.methods
+        missing_methods = [:session, :refresh, :mangadex_user_id, :save] - user.methods
         return true if missing_methods.empty?
 
         warn("Potential user object #{user} is missing #{missing_methods}")

@@ -18,6 +18,8 @@ module Mangadex
         }),
       )
 
+      session_valid_until = Time.now + (15 * 60)
+
       session = response.dig('token', 'session')
       refresh = response.dig('token', 'refresh')
 
@@ -28,8 +30,8 @@ module Mangadex
         session: session,
         refresh: refresh,
         data: mangadex_user.data,
+        session_valid_until: session_valid_until,
       )
-      return if user.session_expired?
 
       Mangadex.context.user = user
 

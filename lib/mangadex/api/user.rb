@@ -31,9 +31,22 @@ module Mangadex
         @refresh = response.dig('token', 'refresh')
         @session = response.dig('token', 'session')
 
-        update_data
+        if Mangadex.configuration.after_refresh.present?
+          Mangadex.configuration.after_refresh.each do |callback|
+            send(callback, @session, @refresh, @session_valid_until)
+          end
+        end
 
         true
+      end
+
+      # callbacks
+      def on_login
+        yield
+      end
+
+      def on_logout
+        yield
       end
 
       sig { returns(User) }
@@ -93,14 +106,6 @@ module Mangadex
         end
 
         user
-      end
-
-      private
-
-      def update_data
-        return unless Mangadex::Internal::Context.user_object?(@data)
-
-        
       end
     end
   end
