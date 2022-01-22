@@ -18,7 +18,7 @@ module Mangadex
 
       sig { returns(T.nilable(Mangadex::Api::User)) }
       def user
-        @ignore_user ? nil : @user&.with_valid_session
+        @ignore_user ? nil : @user
       rescue Mangadex::Errors::UnauthorizedError
         warn("A user is present but not authenticated!")
         nil
@@ -29,7 +29,7 @@ module Mangadex
         @tags ||= Mangadex::Tag.list.data
       end
 
-      sig { params(user: T.nilable(T.any(Hash, Mangadex::Api::User, Mangadex::User)), block: T.proc.returns(T.untyped)).returns(T.untyped) }
+      sig { params(user: T.nilable(T.untyped), block: T.proc.returns(T.untyped)).returns(T.untyped) }
       def with_user(user, &block)
         temp_set_value("user", user) do
           yield
@@ -64,11 +64,12 @@ module Mangadex
             session: user[:session],
             refresh: user[:refresh],
           )
-        elsif Mangadex::Context.user_object?(user)
+        elsif Mangadex::Internal::Context.user_object?(user)
           @user = Mangadex::Api::User.new(
             mangadex_user_id: user.mangadex_user_id.to_s,
             session: user.session,
             refresh: user.refresh,
+            session_valid_until: user.session_valid_until,
             data: user,
           )
         elsif user.nil?

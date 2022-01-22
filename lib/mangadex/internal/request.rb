@@ -121,7 +121,7 @@ module Mangadex
         return headers if Mangadex.context.user.nil?
 
         headers.merge({
-          Authorization: Mangadex.context.user.with_valid_session.session,
+          Authorization: Mangadex.context.user.session,
         })
       end
 

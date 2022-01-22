@@ -3,8 +3,17 @@ module Mangadex
   class Auth
     extend T::Sig
 
-    sig { params(username: T.nilable(String), email: T.nilable(String), password: String).returns(T.nilable(Mangadex::Api::User)) }
-    def self.login(username: nil, email: nil, password: nil)
+    sig do
+      params(
+        username: T.nilable(String),
+        email: T.nilable(String),
+        password: String,
+        block: T.nilable(T.proc.returns(T.untyped))
+      ).returns(
+        T.nilable(T.untyped),
+      )
+    end
+    def self.login(username: nil, email: nil, password: nil, &block)
       args = { password: password }
       args.merge!(email: email) if email
       args.merge!(username: username) if username
@@ -33,9 +42,16 @@ module Mangadex
         session_valid_until: session_valid_until,
       )
 
+      user.persist
+      user
+
+      Mangadex.configuration.callback(:after_login, user)
       Mangadex.context.user = user
 
-      user.persist
+      if block_given?
+        return yield(user)        
+      end
+
       user
     rescue Errors::UnauthorizedError => error
       raise Errors::AuthenticationError.new(error.response)

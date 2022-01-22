@@ -34,6 +34,7 @@ module Mangadex
       # Authentication callbacks
       @before_login = []
       @after_login = []
+      @after_refresh = []
     end
 
     sig { params(klass: Class).void }
@@ -73,6 +74,19 @@ module Mangadex
 
     def storage
       @storage ||= storage_class.new
+    end
+
+    def callback(callback, *args, **kwargs)
+      failed_callbacks = []
+      send(callback).each do |c|
+        send(c, *args, **kwargs)
+      rescue StandardError => e
+        failed_callbacks << {method: c, reason: e}
+      end
+      if failed_callbacks.any?
+        raise Mangadex::Errors::CallbackError, "Undefined callbacks: #{failed_callbacks}"
+      end
+      true
     end
   end
 end
