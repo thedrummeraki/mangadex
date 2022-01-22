@@ -14,7 +14,7 @@ module Mangadex
       :locked,
       :official,
       :verified,
-      :focused_language,
+      :focused_languages,
       :publish_delay,
       :inactive,
       :manga_updates,

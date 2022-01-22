@@ -20,6 +20,8 @@ module Mangadex
       :fantia,
       :tumblr,
       :youtube,
+      :weibo,
+      :naver,
       :website,
       :version,
       :created_at,

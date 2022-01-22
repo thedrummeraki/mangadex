@@ -75,19 +75,6 @@ module Mangadex
       attributes&.title.presence || chapter.presence && "Chapter #{chapter}" || "N/A"
     end
 
-    sig { returns(T.nilable(String)) }
-    def locale
-      found_locale = translated_language.split('-').first
-      return if found_locale.nil?
-
-      ISO_639.find(found_locale)
-    end
-
-    sig { returns(T.nilable(String)) }
-    def locale_name
-      locale&.english_name
-    end
-
     sig { params(data_saver: T::Boolean).returns(T.nilable(T::Array[String])) }
     def page_urls(data_saver: true)
       Mangadex::AtHome.page_urls(id, data_saver: data_saver)
