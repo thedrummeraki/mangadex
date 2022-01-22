@@ -17,6 +17,7 @@ module Mangadex
       :focused_language,
       :publish_delay,
       :inactive,
+      :manga_updates,
       :version,
       :created_at,
       :updated_at
