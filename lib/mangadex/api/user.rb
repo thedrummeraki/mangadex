@@ -25,6 +25,15 @@ module Mangadex
         @data = data
       end
 
+      # true: The tokens were successfully refreshed if the session expired
+      # false: Error: refresh token empty or could not refresh the token on the server
+      sig { params(block: T.nilable(T.proc.returns(T.untyped))).returns(T::Boolean) }
+      def refresh(&block)
+        return true unless session_expired?
+
+        refresh!(&block)
+      end
+
       # true: The tokens were successfully refreshed
       # false: Error: refresh token empty or could not refresh the token on the server
       sig { params(block: T.nilable(T.proc.returns(T.untyped))).returns(T::Boolean) }

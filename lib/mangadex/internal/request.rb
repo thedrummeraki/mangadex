@@ -7,7 +7,6 @@ require 'active_support/core_ext/hash/keys'
 module Mangadex
   module Internal
     class Request
-      BASE_URI = 'https://api.mangadex.org'
       ALLOWED_METHODS = %i(get post put delete).freeze
 
       attr_accessor :path, :headers, :payload, :method, :raw
@@ -100,7 +99,7 @@ module Mangadex
 
       def request_url
         request_path = path.start_with?('/') ? path : "/#{path}"
-        "#{BASE_URI}#{request_path}"
+        "#{Mangadex.configuration.mangadex_url}#{request_path}"
       end
 
       def request_payload
