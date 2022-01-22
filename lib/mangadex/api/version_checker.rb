@@ -18,7 +18,7 @@ module Mangadex
         if version != Mangadex::Version::STRING
           warn(
             "[Warning] This gem is compatible with #{Mangadex::Version::STRING} but it looks like Mangadex is at #{version}",
-            "[Warning] Check out #{Mangadex::Internal::Request::BASE_URI} for more information.",
+            "[Warning] Check out #{Mangadex.configuration.mangadex_url} for more information.",
           )
         end
 

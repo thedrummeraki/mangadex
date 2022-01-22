@@ -127,7 +127,7 @@ module Mangadex
       )
     end
 
-    sig { params(status: String).returns(T::Api::GenericResponse) }
+    sig { params(status: T.nilable(String)).returns(T::Api::GenericResponse) }
     def self.all_reading_status(status = nil)
       args = { status: status } if status.present?
 
