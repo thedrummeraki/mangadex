@@ -4,7 +4,7 @@ module Mangadex
     MAJOR = "5"
     MINOR = "4"
     TINY = "11"
-    PATCH = "1"
+    PATCH = "2"
 
     STRING = [MAJOR, MINOR, TINY].compact.join('.')
     FULL = [MAJOR, MINOR, TINY, PATCH].compact.join('.')

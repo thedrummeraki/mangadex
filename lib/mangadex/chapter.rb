@@ -82,7 +82,6 @@ module Mangadex
 
     def as_json(*)
       super.merge({
-        locale_name: locale_name,
         preview_image_url: preview_image_url,
       })
     end
