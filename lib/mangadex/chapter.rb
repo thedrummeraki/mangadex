@@ -80,12 +80,6 @@ module Mangadex
       Mangadex::AtHome.page_urls(id, data_saver: data_saver)
     end
 
-    def as_json(*)
-      super.merge({
-        preview_image_url: preview_image_url,
-      })
-    end
-
     def self.attributes_to_inspect
       [:id, :type, :title, :volume, :chapter, :pages, :publish_at]
     end
