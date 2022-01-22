@@ -61,10 +61,7 @@ user.data
 
 ```ruby
 # Refreshes the tokens now (Boolean)
-user.refresh!
-
-# Refreshes the tokens if expired, then return user itself (Mangadex::Api::User)
-user.with_valid_session
+user.refresh_session!
 
 # Returns if user.session has expired (Boolean)
 user.session_expired?

@@ -127,9 +127,9 @@ module Mangadex
       )
     end
 
-    sig { params(status: String).returns(T::Api::GenericResponse) }
-    def self.all_reading_status(status)
-      args = { status: status }
+    sig { params(status: T.nilable(String)).returns(T::Api::GenericResponse) }
+    def self.all_reading_status(status = nil)
+      args = { status: status } if status.present?
 
       Mangadex::Internal::Request.get(
         '/manga/status',
@@ -163,6 +163,15 @@ module Mangadex
             required: true,
           },
         })
+      )
+    end
+
+    sig { params(id: T.any(T::Array[String], String), grouped: T::Boolean).returns(T::Api::GenericResponse) }
+    def self.read_markers(id, grouped: false)
+      Mangadex::Internal::Request.get(
+        '/manga/read',
+        { ids: Array(id), grouped: grouped },
+        auth: true,
       )
     end
 

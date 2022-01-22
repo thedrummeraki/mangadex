@@ -3,15 +3,22 @@
 require "bundler/setup"
 require "mangadex"
 
-username, password, email = [
-  ENV['MD_USERNAME'],
-  ENV['MD_PASSWORD'],
-  ENV['MD_EMAIL'],
-]
+def try_logging_in
+  username, password, email = [
+    ENV['MD_USERNAME'],
+    ENV['MD_PASSWORD'],
+    ENV['MD_EMAIL'],
+  ]
 
-if (username || email) && password
-  Mangadex::Auth.login(username: username, email: email, password: password)
+  if (username || email) && password
+    Mangadex::Auth.login(username: username, email: email, password: password)
+  end
+rescue Mangadex::Errors::StandardError => e
+  puts e
+  false
 end
+
+try_logging_in
 
 # You can add fixtures and/or initialization code here to make experimenting
 # with your gem easier. You can also use a different console, if you like.

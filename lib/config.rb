@@ -4,11 +4,6 @@ module Mangadex
   class Config
     extend T::Sig
 
-    # Class used to persist users
-    # Must respond to: :session, :refresh, :mangadex_user_id
-    sig { returns(Class) }
-    attr_accessor :user_class
-
     # Persisting strategy. See Mangadex::Storage::Base for more details.
     sig { returns(Class) }
     attr_accessor :storage_class
@@ -16,16 +11,19 @@ module Mangadex
     sig { returns(T::Array[ContentRating]) }
     attr_accessor :default_content_ratings
 
+    sig { returns(String) }
+    attr_accessor :mangadex_url
+
     sig { void }
     def initialize
-      @user_class = Api::User
       @storage_class = Storage::Memory
       @default_content_ratings = ContentRating.parse(['safe', 'suggestive', 'erotica'])
+      @mangadex_url = 'https://api.mangadex.org'
     end
 
     sig { params(klass: Class).void }
     def user_class=(klass)
-      missing_methods = [:session, :refresh, :mangadex_user_id] - klass.instance_methods
+      missing_methods = [:session, :refresh, :mangadex_user_id] - klass.new.methods
       if missing_methods.empty?
         @user_class = klass
       else

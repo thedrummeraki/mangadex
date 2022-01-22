@@ -7,7 +7,6 @@ require 'active_support/core_ext/hash/keys'
 module Mangadex
   module Internal
     class Request
-      BASE_URI = 'https://api.mangadex.org'
       ALLOWED_METHODS = %i(get post put delete).freeze
 
       attr_accessor :path, :headers, :payload, :method, :raw
@@ -51,7 +50,7 @@ module Mangadex
       end
 
       def run!(raw: false, auth: false)
-        payload_details = request_payload ? "Payload: #{request_payload}" : "{no-payload}"
+        payload_details = request_payload ? "Payload: #{sensitive_request_payload}" : "{no-payload}"
         puts("[#{self.class.name}] #{method.to_s.upcase} #{request_url} #{payload_details}")
 
         raise Mangadex::Errors::UserNotLoggedIn.new if auth && Mangadex.context.user.nil?
@@ -100,7 +99,7 @@ module Mangadex
 
       def request_url
         request_path = path.start_with?('/') ? path : "/#{path}"
-        "#{BASE_URI}#{request_path}"
+        "#{Mangadex.configuration.mangadex_url}#{request_path}"
       end
 
       def request_payload
@@ -108,12 +107,20 @@ module Mangadex
 
         JSON.generate(payload)
       end
+      
+      def sensitive_request_payload(sensitive_fields: %w(password token))
+        payload = JSON.parse(request_payload)
+        sensitive_fields.map(&:to_s).each do |field|
+          payload[field] = '[REDACTED]' if payload.key?(field)
+        end
+        JSON.generate(payload)
+      end
 
       def request_headers
         return headers if Mangadex.context.user.nil?
 
         headers.merge({
-          Authorization: Mangadex.context.user.with_valid_session.session,
+          Authorization: Mangadex.context.user.session,
         })
       end
 

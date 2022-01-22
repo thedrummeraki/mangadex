@@ -7,6 +7,13 @@ module Mangadex
       attr_accessor :mangadex_user_id, :session, :refresh, :session_valid_until
       attr_reader :data
 
+      SERIALIZABLE_KEYS = %i(
+        mangadex_user_id
+        session
+        refresh
+        session_valid_until
+      )
+
       sig { params(mangadex_user_id: String, session: T.nilable(String), refresh: T.nilable(String), data: T.untyped, session_valid_until: T.nilable(Time)).void }
       def initialize(mangadex_user_id:, session: nil, refresh: nil, data: nil, session_valid_until: nil)
         raise ArgumentError, 'Missing mangadex_user_id' if mangadex_user_id.to_s.empty?
@@ -18,10 +25,33 @@ module Mangadex
         @data = data
       end
 
+      # true: The tokens were successfully refreshed if the session expired
+      # false: Error: refresh token empty or could not refresh the token on the server
+      sig do
+        params(
+          block: T.nilable(
+            T.proc.params(arg0: User).returns(
+              T.untyped)
+            )
+          ).returns(T::Boolean)
+      end
+      def refresh_session(&block)
+        return true unless session_expired?
+
+        refresh_session!(&block)
+      end
+
       # true: The tokens were successfully refreshed
       # false: Error: refresh token empty or could not refresh the token on the server
-      sig { returns(T::Boolean) }
-      def refresh!
+      sig do
+        params(
+          block: T.nilable(
+            T.proc.params(arg0: User).returns(
+              T.untyped)
+            )
+          ).returns(T::Boolean)
+      end
+      def refresh_session!(&block)
         return false if refresh.nil?
 
         response = Mangadex::Internal::Request.post('/auth/refresh', payload: { token: refresh })
@@ -31,15 +61,11 @@ module Mangadex
         @refresh = response.dig('token', 'refresh')
         @session = response.dig('token', 'session')
 
-        true
-      end
+        if block_given?
+          yield(self)
+        end
 
-      sig { returns(User) }
-      def with_valid_session
-        session_expired? && refresh!
-        self
-      ensure
-        self
+        true
       end
 
       sig { returns(T::Boolean) }
@@ -65,6 +91,18 @@ module Mangadex
         !mangadex_user_id.nil? && !mangadex_user_id.strip.empty?
       end
 
+      sig { params(except: T.any(Symbol, T::Array[Symbol])).returns(Hash) }
+      def to_h(except: [])
+        except = Array(except).map(&:to_sym)
+        keys = SERIALIZABLE_KEYS.reject do |key|
+          except.include?(key)
+        end
+
+        keys.map do |key|
+          [key, send(key)]
+        end.to_h
+      end
+
       sig { params(mangadex_user_id: T.nilable(String)).returns(T.nilable(User)) }
       def self.from_storage(mangadex_user_id)
         return if mangadex_user_id.nil?
@@ -81,7 +119,7 @@ module Mangadex
             session: session,
             refresh: refresh,
             session_valid_until: session_valid_until,
-          ).with_valid_session
+          )
         else
           nil
         end
