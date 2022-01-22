@@ -100,7 +100,7 @@ user = Mangadex.context.user
 #### Refresh the user's token
 
 ```ruby
-Mangadex.context.user.refresh! do |user|
+Mangadex.context.user.refresh_session! do |user|
   # `user` is of type Mangadex::Api::User
   puts(user.mangadex_user_id)
   puts(user.session)

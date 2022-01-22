@@ -28,16 +28,16 @@ module Mangadex
       # true: The tokens were successfully refreshed if the session expired
       # false: Error: refresh token empty or could not refresh the token on the server
       sig { params(block: T.nilable(T.proc.returns(T.untyped))).returns(T::Boolean) }
-      def refresh(&block)
+      def refresh_session(&block)
         return true unless session_expired?
 
-        refresh!(&block)
+        refresh_session!(&block)
       end
 
       # true: The tokens were successfully refreshed
       # false: Error: refresh token empty or could not refresh the token on the server
       sig { params(block: T.nilable(T.proc.returns(T.untyped))).returns(T::Boolean) }
-      def refresh!(&block)
+      def refresh_session!(&block)
         return false if refresh.nil?
 
         response = Mangadex::Internal::Request.post('/auth/refresh', payload: { token: refresh })

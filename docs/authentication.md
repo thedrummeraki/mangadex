@@ -61,7 +61,7 @@ user.data
 
 ```ruby
 # Refreshes the tokens now (Boolean)
-user.refresh!
+user.refresh_session!
 
 # Returns if user.session has expired (Boolean)
 user.session_expired?

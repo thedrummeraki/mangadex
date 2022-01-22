@@ -84,7 +84,7 @@ module Mangadex
 
     sig { returns(T::Boolean) }
     def self.refresh_token
-      !(Mangadex.context.user&.refresh!).nil?
+      !(Mangadex.context.user&.refresh_session!).nil?
     end
 
     private
