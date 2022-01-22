@@ -45,15 +45,6 @@ module Mangadex
         true
       end
 
-      # callbacks
-      def on_login
-        yield
-      end
-
-      def on_logout
-        yield
-      end
-
       sig { returns(T::Boolean) }
       def session_expired?
         @session_valid_until.nil? || @session_valid_until <= Time.now

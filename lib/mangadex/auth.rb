@@ -45,7 +45,6 @@ module Mangadex
       user.persist
       user
 
-      Mangadex.configuration.callback(:after_login, user)
       Mangadex.context.user = user
 
       if block_given?

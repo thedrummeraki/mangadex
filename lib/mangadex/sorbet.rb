@@ -38,7 +38,5 @@ module T
         ::Mangadex::ContentRating,
       )
     end
-
-    ConfigCallback = T.type_alias { T.any(Symbol, T::Array[Symbol]) }
   end
 end

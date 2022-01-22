@@ -10,8 +10,6 @@ module Mangadex
       extend T::Sig
     end
 
-    class CallbackError < ::StandardError; end
-
     class UserNotLoggedIn < StandardError
       sig { returns(String) }
       def message
