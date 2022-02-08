@@ -1,11 +1,9 @@
 # typed: false
 
-require "active_support/hash_with_indifferent_access"
-
 module Mangadex
   module Internal
     module WithAttributes
-      extend ActiveSupport::Concern
+      extend Concern
 
       attr_accessor \
           :id,
@@ -53,8 +51,6 @@ module Mangadex
             eval class_contents
             Object.const_get(target_attributes_class_name)
           end
-
-          data = data.with_indifferent_access
 
           relationships = data['relationships']&.map do |relationship_data|
             Relationship.from_data(relationship_data, MangadexObject.new(**data))

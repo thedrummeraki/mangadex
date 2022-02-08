@@ -1,5 +1,4 @@
 # typed: false
-require "active_support/inflector"
 require_relative "internal/with_attributes"
 
 module Mangadex

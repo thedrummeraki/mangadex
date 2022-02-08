@@ -1,8 +1,6 @@
 # typed: false
 require 'rest-client'
 require 'json'
-require 'active_support/core_ext/object/to_query'
-require 'active_support/core_ext/hash/keys'
 
 module Mangadex
   module Internal
@@ -84,7 +82,7 @@ module Mangadex
         return path if params.blank?
 
         params = params.deep_transform_keys do |key|
-          key.to_s.camelize(:lower)
+          key.to_s.camelize
         end
         "#{path}?#{params.to_query}"
       end

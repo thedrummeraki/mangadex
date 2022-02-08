@@ -1,7 +1,6 @@
 # typed: true
 require 'sorbet-runtime'
 
-require 'active_support'
 require_relative 'extensions'
 
 # The insides of the gem

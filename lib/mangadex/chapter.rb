@@ -15,6 +15,7 @@ module Mangadex
       :uploader,
       :external_url,
       :version,
+      :readable_at,
       :created_at,
       :updated_at,
       :publish_at

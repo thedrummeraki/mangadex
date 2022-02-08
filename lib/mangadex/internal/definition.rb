@@ -140,8 +140,8 @@ module Mangadex
         end
 
         def validate(args, definition)
-          args = Hash(args).with_indifferent_access
-          definition = Hash(definition).with_indifferent_access
+          args = Hash(args)
+          definition = Hash(definition)
           return args if definition.empty?
 
           errors = []

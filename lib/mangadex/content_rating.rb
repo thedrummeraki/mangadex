@@ -1,7 +1,4 @@
 # typed: false
-require "active_support/string_inquirer"
-require "active_support/core_ext/module/delegation"
-
 module Mangadex
   class ContentRating
     extend T::Sig
@@ -21,8 +18,6 @@ module Mangadex
       PORNOGRAPHIC => 3,
     }.freeze
 
-    delegate_missing_to :value
-
     sig { params(content_rating: T::Api::ContentRating).returns(T::Array[ContentRating]) }
     def self.anything_below(content_rating)
       SCORES.keys.map { |key| ContentRating.new(key) }.select { |record| record <= content_rating }.sort
@@ -38,9 +33,9 @@ module Mangadex
       @value = ensure_value!(value.to_s)
     end
 
-    sig { returns(ActiveSupport::StringInquirer) }
+    sig { returns(StringInquirer) }
     def value
-      ActiveSupport::StringInquirer.new(@value)
+      StringInquirer.new(@value)
     end
 
     sig { params(other: T.any(ContentRating, String, Symbol)).returns(Integer) }
@@ -65,6 +60,10 @@ module Mangadex
     sig { returns(String) }
     def to_s
       value.to_s
+    end
+
+    def method_missing(method_name, *args, **kwargs)
+      value.send(method_name, *args, **kwargs)
     end
 
     private
