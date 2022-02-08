@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    mangadex (5.4.11.3)
+    mangadex (5.4.15)
       psych (~> 4.0.1)
       rest-client (~> 2.1)
       sorbet-runtime
