@@ -33,7 +33,9 @@ module Mangadex
           base_class_name = self.name.gsub('::', '_')
           klass_name = self.name
           target_attributes_class_name = "#{base_class_name}_Attributes"
-          
+
+          data = data.transform_keys(&:to_s)
+
           klass = if const_defined?(target_attributes_class_name)
             Object.const_get(target_attributes_class_name)
           else
@@ -56,7 +58,8 @@ module Mangadex
             Relationship.from_data(relationship_data, MangadexObject.new(**data))
           end
 
-          attributes = klass.new(**Hash(data['attributes']))
+          found_attributes = data['attributes'] || {}
+          attributes = klass.new(**Hash(found_attributes.symbolize_keys))
 
           initialize_hash = {
             id: data['id'],

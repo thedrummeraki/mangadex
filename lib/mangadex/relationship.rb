@@ -25,6 +25,7 @@ module Mangadex
       # data: Relationship data
       # source_obj: The object to witch the object belongs to
       def from_data(data, source_obj = nil)
+        data = data.transform_keys(&:to_s)
         klass = class_for_relationship_type(data['type'])
 
         if klass && data['attributes']&.any?
