@@ -4,6 +4,15 @@
 
 Welcome to `mangadex`, your next favourite Ruby gem for interacting with [Mangadex](https://mangadex.org).
 
+## Important information
+
+**By using this gem you accept**:
+- To **credit [Mangadex](https://mangadex.org)**. This gem is your friendly neighbourhood wrapper on _their_ API.
+- To **credit scanlation groups**, especially if you offer the ability to read chapters.
+- **Not to run any ads** on the service that will use this gem. Please do not make money off of Mangadex's services.
+
+These are Mangadex's [rules](https://api.mangadex.org/docs.html#section/Acceptable-use-policy), please follow them.
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -81,6 +90,8 @@ found_manga = response.data
 
 #### Authenticate
 
+with a block...:
+
 ```ruby
 Mangadex::Auth.login(username: 'username', password: 'password') do |user|
   # `user` is of type Mangadex::Api::User
@@ -89,6 +100,18 @@ Mangadex::Auth.login(username: 'username', password: 'password') do |user|
   puts(user.refresh)
   puts(user.session_valid_until)
 end
+```
+
+...or inline...:
+
+```ruby
+# `user` is of type Mangadex::Api::User
+user = Mangadex::Auth.login(username: 'username', password: 'password')
+
+puts(user.mangadex_user_id)
+puts(user.session)
+puts(user.refresh)
+puts(user.session_valid_until)
 ```
 
 You can access the authenticated user by using context:

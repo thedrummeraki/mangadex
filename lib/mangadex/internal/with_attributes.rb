@@ -100,17 +100,13 @@ module Mangadex
             attributes.send(method_name)
           elsif any_relationships?
             existing_relationships = relationships.map(&:type)
-            original_relationship = method_name.to_s
-            looking_for_relationship = original_relationship.singularize
-            is_looking_for_many = original_relationship != looking_for_relationship
+            looking_for_relationship = method_name.to_s
 
             if existing_relationships.include?(looking_for_relationship)
-              search_method = is_looking_for_many ? :select : :find
-              relationships.send(search_method) do |relationship|
+              result = relationships.select do |relationship|
                 relationship.type == looking_for_relationship
               end
-            elsif is_looking_for_many
-              []
+              result.size == 1 ? result.first : result
             else
               super
             end

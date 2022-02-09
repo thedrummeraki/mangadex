@@ -7,6 +7,7 @@ module Mangadex
       :description,
       :volume,
       :file_name,
+      :locale,
       :created_at,
       :updated_at,
       :version

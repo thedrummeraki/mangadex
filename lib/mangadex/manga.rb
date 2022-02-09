@@ -19,6 +19,7 @@ module Mangadex
       :tags,
       :state,
       :version,
+      :chapter_numbers_reset_on_new_volume,
       :created_at,
       :updated_at
 

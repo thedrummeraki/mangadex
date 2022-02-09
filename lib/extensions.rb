@@ -99,6 +99,12 @@ class String
   end
 end
 
+class Symbol
+  def to_query(key)
+    "#{CGI.escape(key.to_param)}=#{CGI.escape(to_param.to_s)}"
+  end
+end
+
 class StringInquirer < String
   private
 
