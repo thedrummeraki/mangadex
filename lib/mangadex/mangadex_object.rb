@@ -18,7 +18,7 @@ module Mangadex
     def initialize(**args)
       args.keys.each do |attribute|
         original_attribute = attribute
-        attribute = attribute.to_s.underscore
+        attribute = Mangadex::Utils.underscore(attribute.to_s)
         attribute_to_set = "#{attribute}="
 
         if respond_to?(attribute_to_set)

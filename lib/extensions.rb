@@ -90,22 +90,6 @@ class FalseClass
 end
 
 class String
-  def camelize(uppercase_first_letter = false)
-    split('_').each_with_index.map do |x, i|
-      i == 0 && !uppercase_first_letter ? x : x.capitalize
-    end.join
-  end
-
-  def underscore
-    gsub(/([A-Z]+)(?=[A-Z][a-z])|([a-z\d])(?=[A-Z])/) do
-      ($1 || $2) << "_"
-    end.tr('-', '_').downcase
-  end
-
-  def constantize
-      Object.const_get(self)
-    end
-
   def to_query(key)
     "#{CGI.escape(key.to_param)}=#{CGI.escape(to_param.to_s)}"
   end

@@ -57,6 +57,8 @@ module Mangadex
       def count
         data.is_a?(Array) ? data.count : nil
       end
+      alias_method :size, :count
+      alias_method :length, :count
 
       def each(&block)
         if data.is_a?(Array)
@@ -68,6 +70,14 @@ module Mangadex
 
       def to_a
         each.to_a
+      end
+
+      def first
+        to_a.first
+      end
+
+      def last
+        to_a.last
       end
 
       def as_json(*)

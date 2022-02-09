@@ -2,6 +2,7 @@
 require 'sorbet-runtime'
 
 require_relative 'extensions'
+require "mangadex/utils"
 
 # The insides of the gem
 require "mangadex/version"

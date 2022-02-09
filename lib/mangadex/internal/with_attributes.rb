@@ -26,7 +26,7 @@ module Mangadex
         end
 
         def type
-          self.name.split('::').last.underscore
+          Mangadex::Utils.underscore(self.name.split('::').last)
         end
 
         def from_data(data, related_type: nil, source_obj: nil)
@@ -35,7 +35,7 @@ module Mangadex
           target_attributes_class_name = "#{base_class_name}_Attributes"
           
           klass = if const_defined?(target_attributes_class_name)
-            target_attributes_class_name.constantize
+            Object.const_get(target_attributes_class_name)
           else
             class_contents = <<-END
               # typed: true

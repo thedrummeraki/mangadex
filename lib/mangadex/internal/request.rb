@@ -82,7 +82,7 @@ module Mangadex
         return path if params.blank?
 
         params = params.deep_transform_keys do |key|
-          key.to_s.camelize
+          Mangadex::Utils.camelize(key.to_s)
         end
         "#{path}?#{params.to_query}"
       end
