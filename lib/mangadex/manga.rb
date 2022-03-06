@@ -20,6 +20,7 @@ module Mangadex
       :state,
       :version,
       :chapter_numbers_reset_on_new_volume,
+      :available_translated_languages,
       :created_at,
       :updated_at
 
@@ -117,6 +118,7 @@ module Mangadex
         '/manga/random',
         Mangadex::Internal::Definition.validate(args, {
           includes: { accepts: Array },
+          content_rating: { accepts: %w(safe suggestive erotica pornographic), converts: to_a },
         })
       )
     end
