@@ -36,37 +36,52 @@ RSpec.describe Mangadex::Internal::WithAttributes do
       expect(result.attributes.class).to eq(Dummy_Attributes)
     end
 
-    it 'adds relationships as needed' do
-      result = Dummy.from_data({
-        attributes: {
-          a: 'one',
-          c: 'two',
-        },
-        relationships: [
-          {
-            id: 'rel-1',
-            type: 'pet',
-            attributes: { name: 'doggy', age: 3 },
+    describe "relationships" do
+      let(:result) do
+        Dummy.from_data({
+          attributes: {
+            a: 'one',
+            c: 'two',
           },
-          {
-            id: 'rel-2',
-            type: 'pet',
-            attributes: { name: 'neko', age: 4 },
-          },
-          {
-            id: 'rel-3',
-            type: 'avatar',
-            attributes: { url: 'https://dummy.io/profile.png' },
-          },
-        ],
-      })
+          relationships: [
+            {
+              id: 'rel-1',
+              type: 'pet',
+              attributes: { name: 'doggy', age: 3 },
+            },
+            {
+              id: 'rel-2',
+              type: 'pet',
+              attributes: { name: 'neko', age: 4 },
+            },
+            {
+              id: 'rel-3',
+              type: 'avatar',
+              attributes: { url: 'https://dummy.io/profile.png' },
+            },
+          ],
+        })
+      end
 
-      expect(result.relationships.count).to eq(3)
-      expect(result.pets.count).to eq(2)
-      expect(result.pet.attributes['name']).to eq('doggy')
-      expect(result.pet.attributes['age']).to eq(3)
-      expect(result.avatars.count).to eq(1)
-      expect(result.avatar.attributes['url']).to eq('https://dummy.io/profile.png')
+      example 'are added as needed' do
+        expect(result.relationships.count).to eq(3)
+      end
+
+      example '#every returns all relationships with specified type' do
+        expect(result.every(:avatar).count).to eq(1)
+        expect(result.every(:pet).count).to eq(2)
+        expect(result.every(:gibberish).count).to be_zero
+      end
+
+      example '#method_missing returns the first relationship that matches the method name' do
+        expect(result.pet.attributes['name']).to eq('doggy')
+        expect(result.pet.attributes['age']).to eq(3)
+        expect(result.avatar.attributes['url']).to eq('https://dummy.io/profile.png')
+
+        expect do
+          result.gibberish
+        end.to raise_error(NoMethodError)
+      end
     end
   end
 

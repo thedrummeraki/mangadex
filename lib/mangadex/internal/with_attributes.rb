@@ -92,6 +92,12 @@ module Mangadex
           Array(relationships).any?
         end
 
+        def every(relationship_type)
+          Array(relationships).select do |relationship|
+            relationship.type == relationship_type.to_s
+          end
+        end
+
         def method_missing(method_name, *args, **kwargs)
           if self.class.attributes.include?(method_name.to_sym)
             return if attributes.nil?
@@ -103,10 +109,10 @@ module Mangadex
             looking_for_relationship = method_name.to_s
 
             if existing_relationships.include?(looking_for_relationship)
-              result = relationships.select do |relationship|
+              relationships.find do |relationship|
                 relationship.type == looking_for_relationship
               end
-              result.size == 1 ? result.first : result
+              # result.size == 1 ? result.first : result
             else
               super
             end
