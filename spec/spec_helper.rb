@@ -3,7 +3,6 @@ require "bundler/setup"
 require "mangadex"
 
 require_relative "factories"
-require_relative "interceptors"
 require_relative "mock"
 
 RSpec.configure do |config|
