@@ -12,6 +12,7 @@ module T
         T::Array[Text],
         Integer,
         T::Hash[Text, Text],
+        Mangadex::ContentRating,
       )
     end
     MangaResponse = T.type_alias do
