@@ -6,6 +6,7 @@ module Mangadex
   module Internal
     class Request
       ALLOWED_METHODS = %i(get post put delete).freeze
+      SENSITIVE_FIELDS = %w(password token oldPassword newPassword)
 
       attr_accessor :path, :headers, :payload, :method, :raw
       attr_reader :response
@@ -106,7 +107,7 @@ module Mangadex
         JSON.generate(payload)
       end
       
-      def sensitive_request_payload(sensitive_fields: %w(password token))
+      def sensitive_request_payload(sensitive_fields: SENSITIVE_FIELDS)
         payload = JSON.parse(request_payload)
         sensitive_fields.map(&:to_s).each do |field|
           payload[field] = '[REDACTED]' if payload.key?(field)

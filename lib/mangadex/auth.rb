@@ -48,7 +48,7 @@ module Mangadex
       Mangadex.context.user = user
 
       if block_given?
-        return yield(user)        
+        return yield(user)
       end
 
       user

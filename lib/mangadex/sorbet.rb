@@ -26,6 +26,12 @@ module T
         Mangadex::Api::Response[T::Array[Mangadex::Chapter]]
       )
     end
+    UserResponse = T.type_alias do
+      T.any(
+        Mangadex::Api::Response[Mangadex::User],
+        Mangadex::Api::Response[T::Array[Mangadex::User]]
+      )
+    end
     GenericResponse = T.type_alias do
       T.any(
         ::Hash,
