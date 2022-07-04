@@ -12,6 +12,7 @@ module T
         T::Array[Text],
         Integer,
         T::Hash[Text, Text],
+        Mangadex::ContentRating,
       )
     end
     MangaResponse = T.type_alias do
@@ -24,6 +25,12 @@ module T
       T.any(
         Mangadex::Api::Response[Mangadex::Chapter],
         Mangadex::Api::Response[T::Array[Mangadex::Chapter]]
+      )
+    end
+    UserResponse = T.type_alias do
+      T.any(
+        Mangadex::Api::Response[Mangadex::User],
+        Mangadex::Api::Response[T::Array[Mangadex::User]]
       )
     end
     GenericResponse = T.type_alias do

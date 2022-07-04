@@ -1,4 +1,10 @@
 # typed: true
+
+require_relative "definitions/accepts"
+
+require_relative "definitions/base"
+require_relative "definitions/content_rating"
+
 module Mangadex
   module Internal
     class Definition
@@ -115,7 +121,7 @@ module Mangadex
               translated_language: { accepts: [String], converts: converts(:to_a) },
               original_language: { accepts: [String] },
               excluded_original_language: { accepts: [String] },
-              content_rating: { accepts: %w(safe suggestive erotica pornographic), converts: converts(:to_a) },
+              content_rating: Definitions::ContentRating,
               include_future_updates: { accepts: %w(0 1) },
               created_at_since: { accepts: %r{^\d{4}-[0-1]\d-([0-2]\d|3[0-1])T([0-1]\d|2[0-3]):[0-5]\d:[0-5]\d$} },
               updated_at_since: { accepts: %r{^\d{4}-[0-1]\d-([0-2]\d|3[0-1])T([0-1]\d|2[0-3]):[0-5]\d:[0-5]\d$} },
@@ -151,8 +157,17 @@ module Mangadex
           end
 
           definition.each do |key, definition|
-            validator = Definition.new(key, args[key], **definition.symbolize_keys)
-            validation_error = validator.error
+            validation_error = if definition.is_a?(Class) && definition < Definitions::Base
+              validator = definition.new(args[key])
+              validator.validate
+              validator.error_message
+            elsif !definition.is_a?(Class)
+              validator = Definition.new(key, args[key], **definition.symbolize_keys)
+              validator.error
+            else
+              raise "Invalid definition class: #{definition}"
+            end
+
             if validation_error
               errors << { message: validation_error }
             elsif !validator.empty?

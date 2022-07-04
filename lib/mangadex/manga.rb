@@ -114,6 +114,7 @@ module Mangadex
 
     sig { params(args: T::Api::Arguments).returns(T::Api::MangaResponse) }
     def self.random(**args)
+      to_a = Mangadex::Internal::Definition.converts(:to_a)
       Mangadex::Internal::Request.get(
         '/manga/random',
         Mangadex::Internal::Definition.validate(args, {

@@ -78,18 +78,4 @@ RSpec.describe Mangadex::Internal::Context do
 
     expect(Mangadex.context.allowed_content_ratings).to eq(original_content_ratings)
   end
-
-  it 'uses content ratings when calling API' do
-    Mangadex.context.allow_content_ratings('pornographic', 'safe')
-    interceptor = Interceptors::Mangadex.customize do
-      get '/manga' do
-        Factories::Builder.list('manga').merge({params: params})
-      end
-    end
-
-    interceptor.intercept do
-      response = Mangadex::Manga.list
-      expect(response.raw_data.dig("params", "contentRating")).to eq(['pornographic', 'safe'])
-    end
-  end
 end

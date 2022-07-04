@@ -6,6 +6,74 @@ module Mangadex
       :roles,
       :version
 
+    sig { params(args: T::Api::Arguments).returns(T::Api::UserResponse) }
+    def self.list(**args)
+      Mangadex::Internal::Request.get(
+        '/user',
+        Mangadex::Internal::Definition.validate(args, {
+          limit: { accepts: Integer },
+          offset: { accepts: Integer },
+          ids: { accepts: Array },
+          username: { accepts: String },
+          order: { accepts: Hash },
+        }),
+        auth: true,
+      )
+    end
+
+    sig { params(id: String).returns(T::Api::UserResponse) }
+    def self.get(id)
+      Mangadex::Internal::Request.get(
+        "/user/#{id}",
+      )
+    end
+
+    sig { params(id: String).returns(T::Api::GenericResponse) }
+    def self.delete(id)
+      Mangadex::Internal::Request.delete(
+        "/user/#{id}",
+        auth: true,
+      )
+    end
+
+    sig { params(code: String).returns(T::Api::GenericResponse) }
+    def self.delete_code(code)
+      Mangadex::Internal::Request.post(
+        "/user/delete/#{code}",
+      )
+    end
+
+    sig { params(old_password: String, new_password: String).returns(T::Api::GenericResponse) }
+    def self.update_password(old_password:, new_password:)
+      payload = {
+        oldPassword: old_password,
+        newPassword: new_password,
+      }
+
+      Mangadex::Internal::Request.post(
+        '/user/password',
+        payload: payload,
+        auth: true,
+      )
+    end
+
+    sig { params(email: String).returns(T::Api::GenericResponse) }
+    def self.update_email(email:)
+      Mangadex::Internal::Request.post(
+        '/user/email',
+        payload: { email: email },
+        auth: true,
+      )
+    end
+
+    sig { returns(T::Api::UserResponse) }
+    def self.current
+      Mangadex::Internal::Request.get(
+        '/user/me',
+        auth: true,
+      )
+    end
+
     sig { params(args: T::Api::Arguments).returns(Mangadex::Api::Response[Mangadex::Chapter]) }
     def self.feed(**args)
       Mangadex::Internal::Request.get(
