@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    mangadex (5.6.0)
+    mangadex (5.6.0.1)
       psych (~> 4.0.1)
       rest-client (~> 2.1)
       sorbet-runtime
@@ -14,7 +14,7 @@ GEM
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
     http-accept (1.7.0)
-    http-cookie (1.0.4)
+    http-cookie (1.0.5)
       domain_name (~> 0.5)
     method_source (1.0.0)
     mime-types (3.4.1)
@@ -24,7 +24,7 @@ GEM
     pry (0.14.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
-    psych (4.0.3)
+    psych (4.0.4)
       stringio
     rake (13.0.6)
     rest-client (2.1.0)
@@ -47,12 +47,12 @@ GEM
     rspec-support (3.11.0)
     sorbet (0.5.9742)
       sorbet-static (= 0.5.9742)
-    sorbet-runtime (0.5.9742)
+    sorbet-runtime (0.5.10139)
     sorbet-static (0.5.9742-x86_64-linux)
-    stringio (3.0.1)
+    stringio (3.0.2)
     unf (0.1.4)
       unf_ext
-    unf_ext (0.0.8)
+    unf_ext (0.0.8.2)
 
 PLATFORMS
   x86_64-linux

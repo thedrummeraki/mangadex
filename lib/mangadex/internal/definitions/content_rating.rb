@@ -13,7 +13,8 @@ module Mangadex
               class: Mangadex::ContentRating,
               condition: :or,
             ),
-            converts: :to_s
+            converts: :to_s,
+            required: false,
           )
         end
 

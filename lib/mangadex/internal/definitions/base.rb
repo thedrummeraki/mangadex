@@ -17,6 +17,8 @@ module Mangadex
 
         def validate
           validate_required
+          return if !@required && empty?
+
           validate_accepts
 
           nil
