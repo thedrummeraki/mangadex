@@ -24,7 +24,7 @@ GEM
     pry (0.14.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
-    psych (4.0.4)
+    psych (4.0.6)
       stringio
     rake (13.0.6)
     rest-client (2.1.0)
