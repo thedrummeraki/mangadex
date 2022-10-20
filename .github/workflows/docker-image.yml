@@ -2,17 +2,18 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "culture" ]
+    branches: ["culture"]
   pull_request:
-    branches: [ "culture" ]
+    branches: ["culture"]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      - uses: actions/checkout@v3
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag mangadex
+
+      - name: Run tests
+        run: docker run --rm -t mangadex:latest bundle exec rspec
