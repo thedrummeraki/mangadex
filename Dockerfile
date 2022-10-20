@@ -5,3 +5,10 @@ WORKDIR /app
 COPY . /app
 
 RUN bundle install --jobs 4 --retry 5 --quiet
+
+COPY entrypoint.sh /usr/bin/
+RUN chmod +x /usr/bin/entrypoint.sh
+
+ENTRYPOINT [ "entrypoint.sh" ]
+
+CMD [ "bin/console" ]
