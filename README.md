@@ -1,4 +1,4 @@
-[![Ruby](https://github.com/thedrummeraki/mangadex/actions/workflows/ruby.yml/badge.svg)](https://github.com/thedrummeraki/mangadex/actions/workflows/ruby.yml)<a href="https://rubygems.org/gems/mangadex"><img src="https://badgen.net/rubygems/v/mangadex" /></a>
+[![Docker Image CI](https://github.com/thedrummeraki/mangadex/actions/workflows/docker-image.yml/badge.svg)](https://github.com/thedrummeraki/mangadex/actions/workflows/docker-image.yml)<a href="https://rubygems.org/gems/mangadex"><img src="https://badgen.net/rubygems/v/mangadex" /></a>
 
 # Mangadex
 
@@ -7,6 +7,7 @@ Welcome to `mangadex`, your next favourite Ruby gem for interacting with [Mangad
 ## Important information
 
 **By using this gem you accept**:
+
 - To **credit [Mangadex](https://mangadex.org)**. This gem is your friendly neighbourhood wrapper on _their_ API.
 - To **credit scanlation groups**, especially if you offer the ability to read chapters.
 - **Not to run any ads** on the service that will use this gem. Please do not make money off of Mangadex's services.
@@ -196,6 +197,7 @@ end
 ```
 
 Already created your `User` class? Make sure it has all of the following:
+
 - `mangade_user_id`: ID used to identify your user on Mangadex
 - `username`: Your username
 - `session`: The session token (valid for 15 minutes)
@@ -282,7 +284,7 @@ class SessionController < ApplicationController
   rescue Mangadex::Errors::AuthenticationError => error
     # See https://api.mangadex.org/docs.html to learn more about errors
     Rails.logger.error(error.response.errors)
-    
+
     # Handle authentication errors here
   end
 
@@ -325,7 +327,7 @@ class ProtectedController < ApplicationController
 end
 ```
 
-We're going with managing (list, create, show, edit, delete) MDLists (ie: custom lists). __We're not using strong params below to keep things simple, but you should, especially when mutating data (ie: creating and editing)__.
+We're going with managing (list, create, show, edit, delete) MDLists (ie: custom lists). **We're not using strong params below to keep things simple, but you should, especially when mutating data (ie: creating and editing)**.
 
 ```ruby
 class CustomListsController < ProtectedController
@@ -384,9 +386,33 @@ end
 
 ## Development
 
+### Docker
+
+You can use Docker to get started with dev work on the repo. After installing Dcoker, you can build the image:
+
+```
+docker build -t mangadex .
+```
+
+Then run the ruby console with the gem loaded
+
+```
+docker run --rm -it mangadex:latest
+```
+
+You can also log in directly when setting the `MD_USERNAME` and `MD_PASSWORD` (or `MD_EMAIL`) environment variables:
+
+```
+docker run --rm -e MD_USERNAME=username -e MD_PASSWORD=password -it mangadex:latest
+```
+
+### Locally
+
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+
+You can also
 
 ## Contributing
 

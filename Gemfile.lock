@@ -24,7 +24,7 @@ GEM
     pry (0.14.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
-    psych (4.0.4)
+    psych (4.0.6)
       stringio
     rake (13.0.6)
     rest-client (2.1.0)
@@ -45,10 +45,10 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.11.0)
     rspec-support (3.11.0)
-    sorbet (0.5.9742)
-      sorbet-static (= 0.5.9742)
-    sorbet-runtime (0.5.10139)
-    sorbet-static (0.5.9742-x86_64-linux)
+    sorbet (0.5.10501)
+      sorbet-static (= 0.5.10501)
+    sorbet-runtime (0.5.10501)
+    sorbet-static (0.5.10501-x86_64-linux)
     stringio (3.0.2)
     unf (0.1.4)
       unf_ext
