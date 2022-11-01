@@ -17,19 +17,19 @@ module Mangadex
           method: :get,
           headers: headers,
           payload: nil,
-        ).run!(raw: raw, auth: auth)
+        ).run_with_info!(raw: raw, auth: auth)
       end
 
       def self.post(path, headers: nil, auth: false, payload: nil, raw: false)
-        new(path, method: :post, headers: headers, payload: payload).run!(raw: raw, auth: auth)
+        new(path, method: :post, headers: headers, payload: payload).run_with_info!(raw: raw, auth: auth)
       end
 
       def self.put(path, headers: nil, auth: false, payload: nil, raw: false)
-        new(path, method: :put, headers: headers, payload: payload).run!(raw: raw, auth: auth)
+        new(path, method: :put, headers: headers, payload: payload).run_with_info!(raw: raw, auth: auth)
       end
 
       def self.delete(path, headers: nil, auth: false, payload: nil, raw: false)
-        new(path, method: :delete, headers: headers, payload: payload).run!(raw: raw, auth: auth)
+        new(path, method: :delete, headers: headers, payload: payload).run_with_info!(raw: raw, auth: auth)
       end
 
       def initialize(path, method:, headers: nil, payload: nil)
@@ -48,19 +48,16 @@ module Mangadex
         )
       end
 
-      def run!(raw: false, auth: false)
-        payload_details = request_payload ? "Payload: #{sensitive_request_payload}" : "{no-payload}"
-        puts("[#{self.class.name}] #{method.to_s.upcase} #{request_url} #{payload_details}")
+      def run_with_info!(*args, **kwargs)
+        measure_time_taken do
+          run!(*args, **kwargs)
+        end
+      end
 
+      def run!(raw: false, auth: false)
         raise Mangadex::Errors::UserNotLoggedIn.new if auth && Mangadex.context.user.nil?
 
-        start_time = Time.now
-
         @response = request.execute
-        end_time = Time.now
-        elapsed_time = ((end_time - start_time) * 1000).to_i
-        puts("[#{self.class.name}] took #{elapsed_time} ms")
-        
         raw_request = raw || Mangadex.context.force_raw_requests
 
         if (body = @response.body)
@@ -94,6 +91,18 @@ module Mangadex
           data[:content_rating] = Mangadex.context.allowed_content_ratings
         end
         data
+      end
+
+      def measure_time_taken(&block)
+        payload_details = request_payload ? "Payload: #{sensitive_request_payload}" : "{no-payload}"
+        puts("[#{self.class.name}] #{method.to_s.upcase} #{request_url} #{payload_details}")
+        start_time = Time.now
+        result = yield
+
+        result
+      ensure
+        elapsed_time = ((Time.now - start_time) * 1000).to_i
+        puts("[#{self.class.name}] took #{elapsed_time} ms")
       end
 
       def request_url
