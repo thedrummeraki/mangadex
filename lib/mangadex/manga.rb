@@ -21,6 +21,7 @@ module Mangadex
       :version,
       :chapter_numbers_reset_on_new_volume,
       :available_translated_languages,
+      :latest_uploaded_chapter,
       :created_at,
       :updated_at
 
