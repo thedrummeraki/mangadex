@@ -100,7 +100,10 @@ module Mangadex
 
       class << self
         def converts(key=nil)
-          procs = { to_a: -> ( x ) { Array(x) } }
+          procs = {
+            to_a: -> ( x ) { Array(x) },
+            to_i: -> ( x ) { Integer(x.to_s, 10) if x },
+          }
           return procs if key.nil?
 
           procs[key]
@@ -128,6 +131,9 @@ module Mangadex
               publish_at_since: { accepts: %r{^\d{4}-[0-1]\d-([0-2]\d|3[0-1])T([0-1]\d|2[0-3]):[0-5]\d:[0-5]\d$} },
               order: { accepts: Hash },
               includes: { accepts: [String], converts: converts(:to_a) },
+              include_empty_pages: { accepts: [0, 1], converts: converts(:to_i) },
+              include_future_publish_at: { accepts: [0, 1], converts: converts(:to_i) },
+              include_external_url: { accepts: [0, 1], converts: converts(:to_i) },
             },
           )
         end
