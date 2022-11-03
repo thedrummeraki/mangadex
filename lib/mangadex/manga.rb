@@ -35,13 +35,14 @@ module Mangadex
           limit: { accepts: Integer },
           offset: { accepts: Integer },
           title: { accepts: String },
+          author_or_artist: { accepts: String },
           authors: { accepts: [String] },
           artists: { accepts: [String] },
           year: { accepts: Integer },
           included_tags: { accepts: [String] },
-          included_tags_mode: { accepts: %w(OR AND), converts: to_a },
+          included_tags_mode: { accepts: %w(OR AND) },
           excluded_tags: { accepts: [String] },
-          excluded_tags_mode: { accepts: %w(OR AND), converts: to_a },
+          excluded_tags_mode: { accepts: %w(OR AND) },
           status: { accepts: %w(ongoing completed hiatus cancelled), converts: to_a },
           original_language: { accepts: [String] },
           excluded_original_language: { accepts: [String] },
@@ -116,11 +117,16 @@ module Mangadex
     sig { params(args: T::Api::Arguments).returns(T::Api::MangaResponse) }
     def self.random(**args)
       to_a = Mangadex::Internal::Definition.converts(:to_a)
+
       Mangadex::Internal::Request.get(
         '/manga/random',
         Mangadex::Internal::Definition.validate(args, {
           includes: { accepts: Array },
           content_rating: { accepts: %w(safe suggestive erotica pornographic), converts: to_a },
+          included_tags: { accepts: [String] },
+          included_tags_mode: { accepts: %w(OR AND) },
+          excluded_tags: { accepts: [String] },
+          excluded_tags_mode: { accepts: %w(OR AND) },
         })
       )
     end
