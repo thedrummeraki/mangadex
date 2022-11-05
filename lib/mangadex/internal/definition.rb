@@ -14,7 +14,7 @@ module Mangadex
       def initialize(key, value, converts: nil, accepts: nil, required: false)
         @converts = converts
         @key = key
-        @value = convert_value(value)
+        @value = convert_value(value.presence)
         @raw_value = value
         @accepts = accepts
         @required = required ? true : false
@@ -45,6 +45,10 @@ module Mangadex
       end
 
       def convert_value(value)
+        if converts.is_a?(Symbol)
+          converts_proc = self.class.converts(converts)
+          return converts_proc.call(value) if converts_proc
+        end
         if converts.is_a?(Proc)
           converts.call(value)
         elsif converts.is_a?(String) || converts.is_a?(Symbol)
@@ -176,7 +180,7 @@ module Mangadex
 
             if validation_error
               errors << { message: validation_error }
-            elsif !validator.empty?
+            elsif !validator.empty? && validator.value
               args[key] = validator.value
             end
           end
@@ -194,7 +198,9 @@ module Mangadex
             raise ArgumentError, "Validation error: #{error_message}"
           end
 
-          args.symbolize_keys
+          args.symbolize_keys.select do |_, value|
+            value.presence
+          end
         end
       end
     end
