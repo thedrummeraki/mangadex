@@ -58,12 +58,7 @@ module Mangadex
 
     sig { returns(Hash) }
     def self.check_token
-      JSON.parse(
-        Mangadex::Internal::Request.get(
-          '/auth/check',
-          raw: true,
-        )
-      )
+      Mangadex::Internal::Request.get('/auth/check')
     end
 
     sig { returns(T.any(T::Boolean, Mangadex::Api::Response)) }

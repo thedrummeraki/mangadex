@@ -32,7 +32,7 @@ module Mangadex
       Mangadex::Internal::Request.get(
         '/manga',
         Mangadex::Internal::Definition.validate(args, {
-          limit: { accepts: Integer },
+          limit: { accepts: Integer, converts: :to_i },
           offset: { accepts: Integer },
           title: { accepts: String },
           author_or_artist: { accepts: String },
