@@ -25,12 +25,10 @@ module Mangadex
 
     sig { sig(args: T::Api::Arguments).returns(T::Api::GenericResponse) }
     def self.list(**args)
-      to_a = Mangadex::Internal::Definition.converts(:to_a)
-
       Mangadex::Internal::Request.get(
         '/manga/list',
         Mangadex::Internal::Definition.validate(args, {
-          ids: { accepts: [String], converts: to_a, required: true },
+          ids: { accepts: [String], converts: :to_a, required: true },
           grouped: { accepts: [true, false] },
         })
       )

@@ -8,8 +8,6 @@ module Mangadex
 
     sig { params(args: T::Api::Arguments).returns(Mangadex::Api::Response[Report]) }
     def self.list(**args)
-      to_a = Mangadex::Internal::Definition.converts(:to_a)
-
       Mangadex::Internal::Request.get(
         '/report',
         Mangadex::Internal::Definition.validate(args, {
@@ -20,7 +18,7 @@ module Mangadex
           object_id: { accepts: String },
           status: { accepts: %w(waiting accepted refused autoresolved) },
           order: { accepts: Hash },
-          includes: { accepts: Array, converts: to_a },
+          includes: { accepts: Array, converts: :to_a },
         }),
         auth: true,
       )
