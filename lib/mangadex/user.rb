@@ -11,8 +11,8 @@ module Mangadex
       Mangadex::Internal::Request.get(
         '/user',
         Mangadex::Internal::Definition.validate(args, {
-          limit: { accepts: Integer },
-          offset: { accepts: Integer },
+          limit: { accepts: Integer, converts: :to_i },
+          offset: { accepts: Integer, converts: :to_i },
           ids: { accepts: Array },
           username: { accepts: String },
           order: { accepts: Hash },
@@ -89,8 +89,8 @@ module Mangadex
       Mangadex::Internal::Request.get(
         '/user/follows/group',
         Mangadex::Internal::Definition.validate(args, {
-          limit: { accepts: Integer },
-          offset: { accepts: Integer },
+          limit: { accepts: Integer, converts: :to_i },
+          offset: { accepts: Integer, converts: :to_i },
           includes: { accepts: Array },
         }),
         auth: true,
@@ -117,8 +117,8 @@ module Mangadex
       Mangadex::Internal::Request.get(
         '/user/follows/user',
         Mangadex::Internal::Definition.validate(args, {
-          limit: { accepts: Integer },
-          offset: { accepts: Integer },
+          limit: { accepts: Integer, converts: :to_i },
+          offset: { accepts: Integer, converts: :to_i },
         }),
         auth: true,
       )

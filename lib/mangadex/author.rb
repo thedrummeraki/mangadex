@@ -35,8 +35,8 @@ module Mangadex
       Mangadex::Internal::Request.get(
         '/author',
         Mangadex::Internal::Definition.validate(args, {
-          limit: { accepts: Integer },
-          offset: { accepts: Integer },
+          limit: { accepts: Integer, converts: :to_i },
+          offset: { accepts: Integer, converts: :to_i },
           ids: { accepts: [String] },
           name: { accepts: String },
           order: { accepts: Hash },

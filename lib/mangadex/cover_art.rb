@@ -17,8 +17,8 @@ module Mangadex
       Mangadex::Internal::Request.get(
         '/cover',
         Mangadex::Internal::Definition.validate(args, {
-          limit: { accepts: Integer },
-          offset: { accepts: Integer },
+          limit: { accepts: Integer, converts: :to_i },
+          offset: { accepts: Integer, converts: :to_i },
           manga: { accepts: [String] },
           ids: { accepts: [String] },
           uploaders: { accepts: [String] },

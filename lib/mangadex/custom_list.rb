@@ -99,8 +99,8 @@ module Mangadex
       Mangadex::Internal::Request.get(
         '/user/list',
         Mangadex::Internal::Definition.validate(args, {
-          limit: { accepts: Integer },
-          offset: { accepts: Integer },
+          limit: { accepts: Integer, converts: :to_i },
+          offset: { accepts: Integer, converts: :to_i },
         }),
       )
     end
@@ -112,8 +112,8 @@ module Mangadex
       Mangadex::Internal::Request.get(
         '/user/%{id}/list' % {id: user_id},
         Mangadex::Internal::Definition.validate(args, {
-          limit: { accepts: Integer },
-          offset: { accepts: Integer },
+          limit: { accepts: Integer, converts: :to_i },
+          offset: { accepts: Integer, converts: :to_i },
         }),
       )
     end

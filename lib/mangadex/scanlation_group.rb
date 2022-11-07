@@ -27,8 +27,8 @@ module Mangadex
         Mangadex::Internal::Request.get(
           '/group',
           Mangadex::Internal::Definition.validate(args, {
-            limit: { accepts: Integer },
-            offset: { accepts: Integer },
+            limit: { accepts: Integer, converts: :to_i },
+            offset: { accepts: Integer, converts: :to_i },
             ids: { accepts: [String] },
             name: { accepts: String },
             includes: { accepts: [String] },
