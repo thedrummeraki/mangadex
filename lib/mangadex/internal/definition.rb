@@ -117,8 +117,8 @@ module Mangadex
           validate(
             args,
             {
-              limit: { accepts: Integer },
-              offset: { accepts: Integer },
+              limit: { accepts: Integer, converts: :to_i },
+              offset: { accepts: Integer, converts: :to_i },
               ids: { accepts: [String] },
               title: { accepts: String },
               manga: { accepts: String },

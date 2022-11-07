@@ -11,8 +11,8 @@ module Mangadex
       Mangadex::Internal::Request.get(
         '/report',
         Mangadex::Internal::Definition.validate(args, {
-          limit: { accepts: Integer },
-          offset: { accepts: Integer },
+          limit: { accepts: Integer, converts: :to_i },
+          offset: { accepts: Integer, converts: :to_i },
           category: { accepts: %w(manga chapter scanlation_group user author) },
           reason_id: { accepts: String },
           object_id: { accepts: String },
