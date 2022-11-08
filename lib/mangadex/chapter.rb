@@ -36,7 +36,7 @@ module Mangadex
       Mangadex::Internal::Request.get(
         '/chapter/%{id}' % {id: id},
         Mangadex::Internal::Definition.validate(args, {
-          includes: { accepts: [String] },
+          includes: { accepts: [String], converts: :to_a },
         }),
       )
     end
@@ -52,7 +52,7 @@ module Mangadex
           volume: { accepts: String },
           chapter: { accepts: String },
           translated_language: { accepts: %r{^[a-zA-Z\-]{2,5}$} },
-          groups: { accepts: [String] },
+          groups: { accepts: [String], converts: :to_a },
           version: { accepts: Integer, required: true },
         }),
       )

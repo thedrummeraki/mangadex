@@ -29,9 +29,9 @@ module Mangadex
           Mangadex::Internal::Definition.validate(args, {
             limit: { accepts: Integer, converts: :to_i },
             offset: { accepts: Integer, converts: :to_i },
-            ids: { accepts: [String] },
+            ids: { accepts: [String], converts: :to_a },
             name: { accepts: String },
-            includes: { accepts: [String] },
+            includes: { accepts: [String], converts: :to_a },
           }),
         )
       end
@@ -57,7 +57,7 @@ module Mangadex
         Mangadex::Internal::Request.get(
           '/group/%{id}' % {id: id},
           Mangadex::Internal::Definition.validate(args, {
-            includes: { accepts: [String] },
+            includes: { accepts: [String], converts: :to_a },
           }),
         )
       end
