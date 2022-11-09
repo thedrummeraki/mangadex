@@ -1,7 +1,7 @@
 # typed: ignore
 
 RSpec.describe Mangadex::Internal::Definition do
-  class Dummy
+  class DummyDefinition
     attr_accessor :value
     def initialize(value)
       @value = value
@@ -92,25 +92,25 @@ RSpec.describe Mangadex::Internal::Definition do
   end
 
   it "validates list of items" do
-    args = { a: ["one", "two"], b: [1, 2], c: [Dummy.new(1), Dummy.new(2)] }
+    args = { a: ["one", "two"], b: [1, 2], c: [DummyDefinition.new(1), DummyDefinition.new(2)] }
 
     result = Mangadex::Internal::Definition.validate(args, {
       a: { accepts: [String] },
       b: { accepts: [Integer] },
-      c: { accepts: [Dummy] },
+      c: { accepts: [DummyDefinition] },
     })
 
     expect(result).to eq(args)
   end
 
   it "fails validation with invalid type detected" do
-    args = { a: [Dummy.new(1)] }
+    args = { a: [DummyDefinition.new(1)] }
 
     expect do
       Mangadex::Internal::Definition.validate(args, {
         a: { accepts: [String] },
       })
-    end.to raise_error(ArgumentError, /Expected elements in :a to be an Array of String, but found \[\"\<\(dummy\-\d+\)\:Dummy\>/)
+    end.to raise_error(ArgumentError, /Expected elements in :a to be an Array of String, but found \[\"\<\(dummy\-\d+\)\:DummyDefinition\>/)
   end
 
   it "converts to array" do
