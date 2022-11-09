@@ -54,7 +54,7 @@ module Mangadex
           '/upload/%{upload_session_id}/commit' % {upload_session_id: upload_session_id},
           payload: Mangadex::Internal::Definition.validate(args, {
             chapter_draft: { accepts: Hash }, # todo enforce chapter_draft content?
-            page_order: { accepts: [String] },
+            page_order: { accepts: [String], converts: :to_a },
           }),
         )
       end

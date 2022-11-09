@@ -47,7 +47,13 @@ module Mangadex
       def convert_value(value)
         if converts.is_a?(Symbol)
           converts_proc = self.class.converts(converts)
-          return converts_proc.call(value) if converts_proc
+          if converts_proc
+            begin
+              return converts_proc.call(value) 
+            rescue => exception
+              raise ArgumentError.new("Proc parsing error: #{exception}")
+            end
+          end
         end
         if converts.is_a?(Proc)
           converts.call(value)
@@ -119,15 +125,15 @@ module Mangadex
             {
               limit: { accepts: Integer, converts: :to_i },
               offset: { accepts: Integer, converts: :to_i },
-              ids: { accepts: [String] },
+              ids: { accepts: [String], converts: :to_a },
               title: { accepts: String },
               manga: { accepts: String },
-              groups: { accepts: [String] },
+              groups: { accepts: [String], converts: :to_a },
               uploader: { accepts: [String], converts: :to_a },
               chapter: { accepts: [String], converts: :to_a },
               translated_language: { accepts: [String], converts: :to_a },
-              original_language: { accepts: [String] },
-              excluded_original_language: { accepts: [String] },
+              original_language: { accepts: [String], converts: :to_a },
+              excluded_original_language: { accepts: [String], converts: :to_a },
               content_rating: Definitions::ContentRating,
               include_future_updates: { accepts: %w(0 1) },
               created_at_since: { accepts: %r{^\d{4}-[0-1]\d-([0-2]\d|3[0-1])T([0-1]\d|2[0-3]):[0-5]\d:[0-5]\d$} },

@@ -19,11 +19,11 @@ module Mangadex
         Mangadex::Internal::Definition.validate(args, {
           limit: { accepts: Integer, converts: :to_i },
           offset: { accepts: Integer, converts: :to_i },
-          manga: { accepts: [String] },
-          ids: { accepts: [String] },
-          uploaders: { accepts: [String] },
+          manga: { accepts: [String], converts: :to_a },
+          ids: { accepts: [String], converts: :to_a },
+          uploaders: { accepts: [String], converts: :to_a },
           order: { accepts: Hash },
-          includes: { accepts: [String] },
+          includes: { accepts: [String], converts: :to_a },
         })
       )
     end
@@ -53,7 +53,7 @@ module Mangadex
       Mangadex::Internal::Request.get(
         '/cover/%{id}' % {id: id},
         Mangadex::Internal::Definition.validate(args, {
-          includes: { accepts: [String] },
+          includes: { accepts: [String], converts: :to_a },
         })
       )
     end
