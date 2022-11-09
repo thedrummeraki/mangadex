@@ -124,13 +124,21 @@ RSpec.describe Mangadex::Internal::Definition do
   end
 
   it "converts to integer" do
-    args = { a: "1", b: :"2" }
+    args = { a: "1", b: :"2", c: 3 }
 
     result = Mangadex::Internal::Definition.validate(args, {
       a: { accepts: Integer, converts: :to_i },
       b: { accepts: Integer, converts: :to_i },
+      c: { accepts: Integer, converts: :to_i },
     })
 
-    expect(result).to eq({ a: 1, b: 2 })
+    expect(result).to eq({ a: 1, b: 2, c: 3 })
+
+    expect do
+      args = { a: "hehe" }
+      Mangadex::Internal::Definition.validate(args, {
+        a: { accepts: Integer, converts: :to_i },
+      })
+    end.to raise_error(ArgumentError, /Proc parsing error: invalid value for Integer\(\)\: \"hehe\"/)
   end
 end

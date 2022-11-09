@@ -47,7 +47,13 @@ module Mangadex
       def convert_value(value)
         if converts.is_a?(Symbol)
           converts_proc = self.class.converts(converts)
-          return converts_proc.call(value) if converts_proc
+          if converts_proc
+            begin
+              return converts_proc.call(value) 
+            rescue => exception
+              raise ArgumentError.new("Proc parsing error: #{exception}")
+            end
+          end
         end
         if converts.is_a?(Proc)
           converts.call(value)
