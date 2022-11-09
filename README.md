@@ -89,6 +89,21 @@ response = Mangadex::Manga.list(title: 'Ijiranaide nagatoro')
 found_manga = response.data
 ```
 
+#### Search for manga with keyword arguments
+Using only parameters that are present for search.
+
+```ruby
+args = {
+  available_translated_language: ['en', 'uk'],
+  includes: [:cover_art, :author, :artist]
+}
+args[:title] = params[:search].to_s if params[:search].present?
+args[:included_tags] = [params[:tag].to_s] if params[:tag].present?
+args
+response = Mangadex::Manga.list(**args)
+found_manga = response.data
+```
+
 #### Authenticate
 
 with a block...:
