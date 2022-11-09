@@ -10,7 +10,7 @@ module Mangadex
     class << self
       def list(category)
         args = Mangadex::Internal::Definition.validate({category: category}, {
-          category: { accepts: %w(manga chapter scanlation_group user), required: true },
+          category: { accepts: %w(manga chapter scanlation_group user author), required: true },
         })
 
         Mangadex::Internal::Request.get(
@@ -19,6 +19,9 @@ module Mangadex
       end
 
       def create(**args)
+        # TODO: create a "deprecated" log function
+        puts("[DEPRECATED] Use Mangadex::Report.create(...) instead.")
+
         Mangadex::Internal::Request.post(
           '/report',
           payload: Mangadex::Internal::Definition.validate(args, {

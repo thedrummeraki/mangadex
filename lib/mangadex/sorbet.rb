@@ -7,12 +7,14 @@ module T
     Text = T.type_alias { T.any(String, Symbol) }
 
     Arguments = T.type_alias do
-      T.any(
-        Text,
-        T::Array[Text],
-        Integer,
-        T::Hash[Text, Text],
-        Mangadex::ContentRating,
+      T.nilable(
+        T.any(
+          Text,
+          T::Array[Text],
+          Integer,
+          T::Hash[Text, Text],
+          Mangadex::ContentRating,
+        )
       )
     end
     MangaResponse = T.type_alias do

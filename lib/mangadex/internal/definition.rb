@@ -14,7 +14,7 @@ module Mangadex
       def initialize(key, value, converts: nil, accepts: nil, required: false)
         @converts = converts
         @key = key
-        @value = convert_value(value)
+        @value = convert_value(value.presence)
         @raw_value = value
         @accepts = accepts
         @required = required ? true : false
@@ -45,6 +45,10 @@ module Mangadex
       end
 
       def convert_value(value)
+        if converts.is_a?(Symbol)
+          converts_proc = self.class.converts(converts)
+          return converts_proc.call(value) if converts_proc
+        end
         if converts.is_a?(Proc)
           converts.call(value)
         elsif converts.is_a?(String) || converts.is_a?(Symbol)
@@ -100,7 +104,10 @@ module Mangadex
 
       class << self
         def converts(key=nil)
-          procs = { to_a: -> ( x ) { Array(x) } }
+          procs = {
+            to_a: -> ( x ) { Array(x) },
+            to_i: -> ( x ) { Integer(x.to_s, 10) if x },
+          }
           return procs if key.nil?
 
           procs[key]
@@ -110,15 +117,15 @@ module Mangadex
           validate(
             args,
             {
-              limit: { accepts: Integer },
-              offset: { accepts: Integer },
+              limit: { accepts: Integer, converts: :to_i },
+              offset: { accepts: Integer, converts: :to_i },
               ids: { accepts: [String] },
               title: { accepts: String },
               manga: { accepts: String },
               groups: { accepts: [String] },
-              uploader: { accepts: [String], converts: converts(:to_a) },
-              chapter: { accepts: [String], converts: converts(:to_a) },
-              translated_language: { accepts: [String], converts: converts(:to_a) },
+              uploader: { accepts: [String], converts: :to_a },
+              chapter: { accepts: [String], converts: :to_a },
+              translated_language: { accepts: [String], converts: :to_a },
               original_language: { accepts: [String] },
               excluded_original_language: { accepts: [String] },
               content_rating: Definitions::ContentRating,
@@ -127,7 +134,10 @@ module Mangadex
               updated_at_since: { accepts: %r{^\d{4}-[0-1]\d-([0-2]\d|3[0-1])T([0-1]\d|2[0-3]):[0-5]\d:[0-5]\d$} },
               publish_at_since: { accepts: %r{^\d{4}-[0-1]\d-([0-2]\d|3[0-1])T([0-1]\d|2[0-3]):[0-5]\d:[0-5]\d$} },
               order: { accepts: Hash },
-              includes: { accepts: [String], converts: converts(:to_a) },
+              includes: { accepts: [String], converts: :to_a },
+              include_empty_pages: { accepts: [0, 1], converts: converts(:to_i) },
+              include_future_publish_at: { accepts: [0, 1], converts: converts(:to_i) },
+              include_external_url: { accepts: [0, 1], converts: converts(:to_i) },
             },
           )
         end
@@ -170,7 +180,7 @@ module Mangadex
 
             if validation_error
               errors << { message: validation_error }
-            elsif !validator.empty?
+            elsif !validator.empty? && validator.value
               args[key] = validator.value
             end
           end
@@ -188,7 +198,9 @@ module Mangadex
             raise ArgumentError, "Validation error: #{error_message}"
           end
 
-          args.symbolize_keys
+          args.symbolize_keys.select do |_, value|
+            value.presence
+          end
         end
       end
     end

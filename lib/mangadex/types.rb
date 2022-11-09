@@ -19,6 +19,7 @@ require_relative "user"
 require_relative "tag"
 require_relative "scanlation_group"
 require_relative "report_reason"
+require_relative "report"
 require_relative "rating"
 require_relative "statistic"
 

@@ -21,37 +21,37 @@ module Mangadex
       :version,
       :chapter_numbers_reset_on_new_volume,
       :available_translated_languages,
+      :latest_uploaded_chapter,
       :created_at,
       :updated_at
 
     sig { params(args: T::Api::Arguments).returns(T::Api::MangaResponse) }
     def self.list(**args)
-      to_a = Mangadex::Internal::Definition.converts(:to_a)
-
       Mangadex::Internal::Request.get(
         '/manga',
         Mangadex::Internal::Definition.validate(args, {
-          limit: { accepts: Integer },
-          offset: { accepts: Integer },
+          limit: { accepts: Integer, converts: :to_i },
+          offset: { accepts: Integer, converts: :to_i },
           title: { accepts: String },
+          author_or_artist: { accepts: String },
           authors: { accepts: [String] },
           artists: { accepts: [String] },
           year: { accepts: Integer },
           included_tags: { accepts: [String] },
-          included_tags_mode: { accepts: %w(OR AND), converts: to_a },
+          included_tags_mode: { accepts: %w(OR AND) },
           excluded_tags: { accepts: [String] },
-          excluded_tags_mode: { accepts: %w(OR AND), converts: to_a },
-          status: { accepts: %w(ongoing completed hiatus cancelled), converts: to_a },
+          excluded_tags_mode: { accepts: %w(OR AND) },
+          status: { accepts: %w(ongoing completed hiatus cancelled), converts: :to_a },
           original_language: { accepts: [String] },
           excluded_original_language: { accepts: [String] },
           available_translated_language: { accepts: [String] },
-          publication_demographic: { accepts: %w(shounen shoujo josei seinen none), converts: to_a },
+          publication_demographic: { accepts: %w(shounen shoujo josei seinen none), converts: :to_a },
           ids: { accepts: Array },
-          content_rating: { accepts: %w(safe suggestive erotica pornographic), converts: to_a },
+          content_rating: { accepts: %w(safe suggestive erotica pornographic), converts: :to_a },
           created_at_since: { accepts: %r{^\d{4}-[0-1]\d-([0-2]\d|3[0-1])T([0-1]\d|2[0-3]):[0-5]\d:[0-5]\d$} },
           updated_at_since: { accepts: %r{^\d{4}-[0-1]\d-([0-2]\d|3[0-1])T([0-1]\d|2[0-3]):[0-5]\d:[0-5]\d$} },
           order: { accepts: Hash },
-          includes: { accepts: Array, converts: to_a },
+          includes: { accepts: Array, converts: :to_a },
           has_available_chapters: { accepts: ['0', '1', 'true', 'false'] },
           group: { accepts: String },
         }),
@@ -72,13 +72,12 @@ module Mangadex
 
     sig { params(id: String, args: T::Api::Arguments).returns(T::Api::MangaResponse) }
     def self.view(id, **args)
-      to_a = Mangadex::Internal::Definition.converts(:to_a)
       Mangadex::Internal::Definition.must(id)
 
       Mangadex::Internal::Request.get(
         '/manga/%{id}' % {id: id},
         Mangadex::Internal::Definition.validate(args, {
-          includes: { accepts: Array, converts: to_a },
+          includes: { accepts: Array, converts: :to_a },
         })
       )
     end
@@ -114,12 +113,15 @@ module Mangadex
 
     sig { params(args: T::Api::Arguments).returns(T::Api::MangaResponse) }
     def self.random(**args)
-      to_a = Mangadex::Internal::Definition.converts(:to_a)
       Mangadex::Internal::Request.get(
         '/manga/random',
         Mangadex::Internal::Definition.validate(args, {
           includes: { accepts: Array },
-          content_rating: { accepts: %w(safe suggestive erotica pornographic), converts: to_a },
+          content_rating: { accepts: %w(safe suggestive erotica pornographic), converts: :to_a },
+          included_tags: { accepts: [String] },
+          included_tags_mode: { accepts: %w(OR AND) },
+          excluded_tags: { accepts: [String] },
+          excluded_tags_mode: { accepts: %w(OR AND) },
         })
       )
     end
