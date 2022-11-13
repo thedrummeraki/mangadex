@@ -27,6 +27,14 @@ module Mangadex
         }),
       )
 
+      if response.is_a?(Mangadex::Api::Response) && response.result == "error"
+        if block_given?
+          return yield(response)
+        else
+          return response
+        end
+      end
+
       session_valid_until = Time.now + (15 * 60)
 
       session = response.dig('token', 'session')
