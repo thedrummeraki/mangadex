@@ -44,5 +44,9 @@ module Mangadex
     def storage
       @storage ||= storage_class.new
     end
+
+    def user_class
+      @user_class
+    end
   end
 end

@@ -130,6 +130,21 @@ module Mangadex
 
         user
       end
+
+      def initialize_record
+        return unless Mangadex.configuration.user_class
+
+        record = Mangadex.configuration.user_class.new
+        record.mangadex_user_id = mangadex_user_id
+        record.refresh = refresh
+        record.session = session
+
+        if record.respond_to?(:session_valid_until=)
+          record.session_valid_until = session_valid_until
+        end
+
+        record
+      end
     end
   end
 end
