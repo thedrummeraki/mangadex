@@ -40,7 +40,7 @@ module Mangadex
       session = response.dig('token', 'session')
       refresh = response.dig('token', 'refresh')
 
-      mangadex_user = Mangadex::Internal::Request.get('/user/me', headers: { Authorization: session })
+      mangadex_user = Mangadex::Internal::Request.get('/user/me', headers: { Authorization: "Bearer #{session}" })
 
       user = Mangadex::Api::User.new(
         mangadex_user_id: mangadex_user.data.id,
