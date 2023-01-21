@@ -62,6 +62,9 @@ module Mangadex
 
           if direct
             symbolized_data = data.symbolize_keys
+            symbolized_data.transform_keys! do |key|
+              Mangadex::Utils.underscore(key)
+            end
             keys = symbolized_data.keys
             keys.each do |key|
               attr_accessor key

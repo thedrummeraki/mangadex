@@ -15,11 +15,11 @@ module Mangadex
 
     class Comments < MangadexObject
       has_attributes \
-        :threadId,
-        :repliesCount
+        :thread_id,
+        :replies_count
 
       def self.attributes_to_inspect
-        [:id, :threadId, :repliesCount]
+        [:replies_count]
       end
     end
 
