@@ -22,6 +22,7 @@ require_relative "report_reason"
 require_relative "report"
 require_relative "rating"
 require_relative "statistic"
+require_relative "thread"
 
 # Relationship
 require_relative "relationship"

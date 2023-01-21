@@ -111,7 +111,10 @@ module Mangadex
 
         # Derive the class name from the type. "Convention over configuration"
         class_from_data = "Mangadex::#{object_type.split('_').collect(&:capitalize).join}"
-        return unless Object.const_defined?(class_from_data)
+        unless Object.const_defined?(class_from_data)
+          warn("Expected class #{class_from_data} to be defined")
+          return
+        end
 
         klass = Object.const_get(class_from_data)
         new(

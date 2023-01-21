@@ -227,7 +227,7 @@ module Mangadex
 
     sig { returns(T::Boolean) }
     def has_comments?
-      !comments_info.nil?
+      !comments_info.nil? && comments_info.repliesCount > 0
     end
 
     def statistics

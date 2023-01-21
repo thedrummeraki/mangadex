@@ -7,6 +7,10 @@ module Mangadex
         :average,
         :bayesian,
         :distribution
+
+      def self.attributes_to_inspect
+        [:average, :bayesian]
+      end
     end
 
     class Comments < MangadexObject
@@ -52,6 +56,10 @@ module Mangadex
           manga: { accepts: [String], converts: :to_a },
         })
       )
+    end
+
+    def self.attributes_to_inspect
+      [:follows, :rating, :comments]
     end
   end
 end
