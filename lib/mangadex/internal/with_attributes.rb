@@ -29,10 +29,12 @@ module Mangadex
           Mangadex::Utils.underscore(self.name.split('::').last)
         end
 
-        def from_data(data, related_type: nil, source_obj: nil)
+        def from_data(data, related_type: nil, source_obj: nil, direct: false)
           base_class_name = self.name.gsub('::', '_')
           klass_name = self.name
           target_attributes_class_name = "#{base_class_name}_Attributes"
+
+          return if data.nil? || data.empty?
 
           data = data.transform_keys(&:to_s)
 
@@ -58,22 +60,35 @@ module Mangadex
             Relationship.from_data(relationship_data, MangadexObject.new(**data))
           end
 
-          found_attributes = data['attributes'] || {}
-          attributes = klass.new(**Hash(found_attributes.symbolize_keys))
+          if direct
+            symbolized_data = data.symbolize_keys
+            keys = symbolized_data.keys
+            keys.each do |key|
+              attr_accessor key
+            end
 
-          initialize_hash = {
-            id: data['id'],
-            type: data['type'] || self.type,
-            attributes: attributes,
-            related_type: related_type,
-          }
+            instance = new
+            keys.each do |key|
+              instance.send("#{key}=", symbolized_data[key])
+            end
 
-          relationships = [source_obj].compact unless relationships.present?
-          initialize_hash.merge!({relationships: relationships}) if relationships.present?
+            instance
+          else
+            found_attributes = data['attributes'] || {}
+            attributes = klass.new(**Hash(found_attributes.symbolize_keys))
 
-          # binding.pry
+            initialize_hash = {
+              id: data['id'],
+              type: data['type'] || self.type,
+              attributes: attributes,
+              related_type: related_type,
+            }
 
-          new(**initialize_hash)
+            relationships = [source_obj].compact unless relationships.present?
+            initialize_hash.merge!({relationships: relationships}) if relationships.present?
+
+            new(**initialize_hash)
+          end
         end
       end
 

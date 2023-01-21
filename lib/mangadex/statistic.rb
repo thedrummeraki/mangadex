@@ -2,12 +2,38 @@
 
 module Mangadex
   class Statistic < MangadexObject
-    has_attributes \
+    class Rating < MangadexObject
+      has_attributes \
+        :average,
+        :bayesian,
+        :distribution
+    end
+
+    class Comments < MangadexObject
+      has_attributes \
+        :threadId,
+        :repliesCount
+
+      def self.attributes_to_inspect
+        [:id, :threadId, :repliesCount]
+      end
+    end
+
+    attr_accessor \
       :rating,
-      :average,
-      :bayesian,
-      :distribution,
-      :follows
+      :follows,
+      :comments
+
+    class << self
+      def from_data(data)
+        statistics = data[data.keys.first]
+        new(
+          rating: Mangadex::Statistic::Rating.from_data(statistics['rating'], direct: true),
+          comments: Mangadex::Statistic::Comments.from_data(statistics['comments'], direct: true),
+          follows: statistics['follows'],
+        )
+      end
+    end
 
     sig { params(uuid: String).returns(T::Api::GenericResponse) }
     def self.get(uuid)

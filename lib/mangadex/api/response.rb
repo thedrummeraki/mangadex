@@ -36,6 +36,8 @@ module Mangadex
           coerce_entity(data)
         elsif data['response'] == 'collection'
           coerce_collection(data)
+        elsif data.keys.include?('statistics')
+          coerce_statistics(data)
         else
           data
         end
@@ -140,6 +142,13 @@ module Mangadex
             )
           ),
           raw_data: data,
+        )
+      end
+
+      def self.coerce_statistics(data)
+        new(
+          result: data['result'],
+          data: Mangadex::Statistic.from_data(data['statistics']),
         )
       end
     end
