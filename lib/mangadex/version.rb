@@ -2,7 +2,7 @@
 module Mangadex
   module Version
     MAJOR = "5"
-    MINOR = "8"
+    MINOR = "9"
     TINY = "0"
     PATCH = nil
 

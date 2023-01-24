@@ -36,6 +36,8 @@ module Mangadex
           coerce_entity(data)
         elsif data['response'] == 'collection'
           coerce_collection(data)
+        elsif data.keys.include?('statistics')
+          coerce_statistics(data)
         else
           data
         end
@@ -109,7 +111,10 @@ module Mangadex
 
         # Derive the class name from the type. "Convention over configuration"
         class_from_data = "Mangadex::#{object_type.split('_').collect(&:capitalize).join}"
-        return unless Object.const_defined?(class_from_data)
+        unless Object.const_defined?(class_from_data)
+          warn("Expected class #{class_from_data} to be defined")
+          return
+        end
 
         klass = Object.const_get(class_from_data)
         new(
@@ -140,6 +145,13 @@ module Mangadex
             )
           ),
           raw_data: data,
+        )
+      end
+
+      def self.coerce_statistics(data)
+        new(
+          result: data['result'],
+          data: Mangadex::Statistic.from_data(data['statistics']),
         )
       end
     end

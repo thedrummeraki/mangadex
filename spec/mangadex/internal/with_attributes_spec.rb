@@ -24,6 +24,13 @@ RSpec.describe Mangadex::Internal::WithAttributes do
       expect(result.attributes.d).to be_nil
     end
 
+    it 'can set other attributes when direct' do
+      data = { e: 'sei' }
+      result = Dummy.from_data(data, direct: true)
+
+      expect(result.e).to eq('sei')
+    end
+
     it 'creates the special attribute class' do
       result = Dummy.from_data({
         attributes: {

@@ -10,9 +10,13 @@ module Mangadex
       end
 
       def underscore(string)
-        string.gsub(/([A-Z]+)(?=[A-Z][a-z])|([a-z\d])(?=[A-Z])/) do
+        is_symbol = string.kind_of?(Symbol)
+        data = string.to_s
+        result = data.gsub(/([A-Z]+)(?=[A-Z][a-z])|([a-z\d])(?=[A-Z])/) do
           ($1 || $2) << "_"
         end.tr('-', '_').downcase
+
+        is_symbol ? result.to_sym : result
       end
     end
   end

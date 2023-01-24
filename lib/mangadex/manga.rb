@@ -224,5 +224,20 @@ module Mangadex
       chapter_args = args.merge({manga: id})
       Chapter.list(**chapter_args)
     end
+
+    sig { returns(T::Boolean) }
+    def has_comments?
+      !comments_info.nil? && comments_info.repliesCount > 0
+    end
+
+    def statistics
+      @statistics ||= Mangadex::Statistic.get(id).data
+    end
+    alias :stats :statistics
+
+    def comments_info
+      statistics.comments
+    end
+    alias :comments :comments_info
   end
 end
