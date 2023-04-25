@@ -2,6 +2,7 @@
 require "bundler/setup"
 require "mangadex"
 
+require_relative "vcr_config"
 require_relative "factories"
 require_relative "mock"
 
