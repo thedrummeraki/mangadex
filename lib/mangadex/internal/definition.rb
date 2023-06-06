@@ -4,6 +4,7 @@ require_relative "definitions/accepts"
 
 require_relative "definitions/base"
 require_relative "definitions/content_rating"
+require_relative "definitions/year"
 
 module Mangadex
   module Internal

@@ -36,7 +36,7 @@ module Mangadex
           author_or_artist: { accepts: String },
           authors: { accepts: [String], converts: :to_a },
           artists: { accepts: [String], converts: :to_a },
-          year: { accepts: Integer },
+          year: Mangadex::Internal::Definitions::Year,
           included_tags: { accepts: [String], converts: :to_a },
           included_tags_mode: { accepts: %w(OR AND) },
           excluded_tags: { accepts: [String], converts: :to_a },
