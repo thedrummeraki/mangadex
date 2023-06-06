@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    mangadex (5.9.0)
+    mangadex (5.10.0)
       psych (>= 4.0.1, < 5.2.0)
       rest-client (~> 2.1)
       sorbet-runtime
@@ -19,7 +19,7 @@ GEM
     method_source (1.0.0)
     mime-types (3.4.1)
       mime-types-data (~> 3.2015)
-    mime-types-data (3.2022.0105)
+    mime-types-data (3.2023.0218.1)
     netrc (0.11.0)
     pry (0.14.2)
       coderay (~> 1.1)
