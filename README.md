@@ -12,7 +12,7 @@ Welcome to `mangadex`, your next favourite Ruby gem for interacting with [Mangad
 - To **credit scanlation groups**, especially if you offer the ability to read chapters.
 - **Not to run any ads** on the service that will use this gem. Please do not make money off of Mangadex's services.
 
-These are Mangadex's [rules](https://api.mangadex.org/docs.html#section/Acceptable-use-policy), please follow them.
+These are Mangadex's [rules](https://api.mangadex.org/docs/#acceptable-use-policy), please follow them.
 
 ## Installation
 
@@ -222,7 +222,7 @@ module ApplicationHelper
 
   def log_in(user)
     # `user` is an instance of your `User` class
-    session[:id] = user.id6
+    session[:id] = user.id
   end
 
   def log_out
@@ -394,7 +394,7 @@ You can use Docker to get started with dev work on the repo. After installing Dc
 docker build -t mangadex .
 ```
 
-Then run the ruby console with the gem loaded
+Then run the ruby console with the gem loaded:
 
 ```
 docker run --rm -it mangadex:latest
@@ -405,6 +405,39 @@ You can also log in directly when setting the `MD_USERNAME` and `MD_PASSWORD` (o
 ```
 docker run --rm -e MD_USERNAME=username -e MD_PASSWORD=password -it mangadex:latest
 ```
+
+### Docker Compose
+
+If it's simpler, you can simply use Compose and get started quickly.
+> Note: You may have to use `docker-compose` if you're using Compose V1. This project should be compatible with both Compose V1 and V2. See the [Compose migration docs](https://docs.docker.com/compose/migrate/) to learn more.
+
+Build the image:
+
+```
+docker compose build
+```
+
+And run the ruby console with the gem loaded:
+
+```
+docker compose run gem
+```
+
+Create a `docker-compose.override.yml` to add environment secrets (and anything else you'd like to customize):
+
+```yml
+# docker-compose.override.yml
+
+version: '3'
+services:
+  gem:
+    environment:
+      MD_USERNAME: username
+      MD_PASSWORD: password
+```
+
+Running `docker compose run gem`, which launches the ruby console, will attempt logging in the user `username`.
+
 
 ### Locally
 
