@@ -7,3 +7,12 @@ services:
     tty: true
     volumes:
       - .:/app
+      - cassettes:/cassettes
+
+  cassettes:
+    image: drummeraki/mangadex-gem-vcr:latest
+    volumes:
+      - cassettes:/usr/src/app
+
+volumes:
+  cassettes:
