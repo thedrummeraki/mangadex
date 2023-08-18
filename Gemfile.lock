@@ -45,10 +45,10 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.12.0)
     rspec-support (3.12.0)
-    sorbet (0.5.10864)
-      sorbet-static (= 0.5.10864)
+    sorbet (0.5.10972)
+      sorbet-static (= 0.5.10972)
     sorbet-runtime (0.5.10863)
-    sorbet-static (0.5.10864-x86_64-linux)
+    sorbet-static (0.5.10972-x86_64-linux)
     stringio (3.0.7)
     unf (0.1.4)
       unf_ext
