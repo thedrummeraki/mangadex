@@ -47,7 +47,7 @@ GEM
     rspec-support (3.12.0)
     sorbet (0.5.11247)
       sorbet-static (= 0.5.11247)
-    sorbet-runtime (0.5.11145)
+    sorbet-runtime (0.5.11294)
     sorbet-static (0.5.11247-x86_64-linux)
     stringio (3.1.0)
     unf (0.1.4)
