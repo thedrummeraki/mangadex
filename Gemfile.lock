@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     mangadex (5.10.0)
-      psych (>= 4.0.1, < 5.2.0)
+      psych (>= 4.0.1, < 5.3.0)
       rest-client (~> 2.1)
       sorbet-runtime
 
@@ -24,7 +24,7 @@ GEM
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
-    psych (5.1.2)
+    psych (5.2.0)
       stringio
     rake (13.2.1)
     rest-client (2.1.0)
@@ -49,7 +49,7 @@ GEM
       sorbet-static (= 0.5.11531)
     sorbet-runtime (0.5.11532)
     sorbet-static (0.5.11531-x86_64-linux)
-    stringio (3.1.0)
+    stringio (3.1.2)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.8.2)
